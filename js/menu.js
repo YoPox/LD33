@@ -2,7 +2,7 @@ var menuState = {
 
   create: function() {
 
-    game.stage.backgroundColor = "#3949AB";
+    game.stage.backgroundColor = "#2B3D73";
 
   },
 
