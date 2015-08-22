@@ -10,19 +10,21 @@ var moveInt;
 var actSelection = 1;
 var isMoving = false;
 var up, down, enter;
+var block = false;
 
 var menuState = {
 
   create: function() {
 
     // LOGO
-    title = game.add.sprite(game.width / 2 - 256, game.height - 256, 'title');
+    title = game.add.sprite(game.width / 2, game.height, 'title');
     title.scale.set(4);
+    title.anchor.set(0.5, 0.5);
     title.smoothed = false;
     title.alpha = 0;
     // ANIMATION
     game.add.tween(title).to( { alpha: 1 }, 2000, Phaser.Easing.Exponential.InOut, true);
-    game.add.tween(title).to( { y: game.height / 2 - 256 }, 1500, Phaser.Easing.Exponential.InOut, true);
+    game.add.tween(title).to( { y: game.height / 4 }, 1500, Phaser.Easing.Exponential.InOut, true);
     // REGULAR MOVE
     moveInt = setInterval(function () {
       game.add.tween(title).to( { y: title.y + 4 }, 1500, Phaser.Easing.Exponential.InOut, true);
@@ -52,8 +54,8 @@ var menuState = {
       game.add.tween(playText).to( { x: game.width / 2 }, 750, Phaser.Easing.Exponential.InOut, true);
     }, 900);
     playText.inputEnabled = true;
-    playText.events.onInputOver.add(function() {moveRect(1)}, this);
-    playText.events.onInputDown.add(function() {start()}, this);
+    playText.events.onInputOver.add(function() {moveRect(1);}, this);
+    playText.events.onInputDown.add(function() {start();}, this);
 
     // SHARE TEXT
     shareText = game.add.bitmapText(game.width / 2 + 64,  3 * game.height / 4 + 16, "Munro", "Share", 64);
@@ -65,15 +67,15 @@ var menuState = {
       game.add.tween(shareText).to( { x: game.width / 2 }, 750, Phaser.Easing.Exponential.InOut, true);
     }, 950);
     shareText.inputEnabled = true;
-    shareText.events.onInputOver.add(function() {moveRect(2)}, this);
-    shareText.events.onInputDown.add(function() {twitt()}, this);
+    shareText.events.onInputOver.add(function() {moveRect(2);}, this);
+    shareText.events.onInputDown.add(function() {twitt();}, this);
 
     // PHASER's LOGO
     phaser = game.add.sprite(game.width / 2 - 52, game.height + 30, 'phaser');
     phaser.alpha = 0;
     setTimeout(function () {
       game.add.tween(phaser).to( { alpha: 1 }, 1000, Phaser.Easing.Exponential.InOut, true);
-      game.add.tween(phaser).to( { y: game.height - 64 }, 750, Phaser.Easing.Exponential.InOut, true);
+      game.add.tween(phaser).to( { y: game.height - 70 }, 750, Phaser.Easing.Exponential.InOut, true);
     }, 1200);
     phaser.inputEnabled = true;
     phaser.input.useHandCursor = true;
@@ -81,11 +83,11 @@ var menuState = {
 
     // KEYBOARD
     up = game.input.keyboard.addKey(Phaser.Keyboard.UP);
-    up.onDown.add(function() {move(1)}, this);
+    up.onDown.add(function() {move(1);}, this);
     down = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
-    down.onDown.add(function() {move(2)}, this);
+    down.onDown.add(function() {move(2);}, this);
     enter = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-    enter.onDown.add(function() {select()}, this);
+    enter.onDown.add(function() {select();}, this);
 
   }
 
@@ -122,13 +124,22 @@ function moveRect(to) {
 }
 
 function start() {
-  clearInterval(moveInt);
-  title.destroy();
-  phaser.destroy();
-  playText.destroy();
-  shareText.destroy();
-  selectionRect.destroy();
-  game.state.start("play");
+  if (!block) {
+    block = true;
+    // FADE OUT
+    game.add.tween(game.world).to( { alpha: 0 }, 1500, Phaser.Easing.Exponential.InOut, true);
+
+    // DESTROY SPRITES AND CHANGE STATE
+    setTimeout(function () {
+        clearInterval(moveInt);
+        title.destroy();
+        phaser.destroy();
+        playText.destroy();
+        shareText.destroy();
+        selectionRect.destroy();
+        game.state.start("choose");
+    }, 1500);
+  }
 }
 
 function move(y) {

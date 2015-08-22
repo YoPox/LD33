@@ -8,11 +8,16 @@ var loadState = {
 
   preload: function() {
 
+    // BOOT
     game.load.image("logo", "../assets/logo.png");
-    game.load.image("title", "../assets/working/title.png");
     game.load.image("part", "../assets/bluePart.png");
     game.load.image("part2", "../assets/redPart.png");
+    // TITLE
+    game.load.image("title", "../assets/working/title.png");
     game.load.image("phaser", "../assets/phaser.png");
+    // CHOOSE
+    game.load.image("arrow", "../assets/working/arrow.png");
+    // FONT
     game.load.bitmapFont('Munro', '../assets/font/Munro.png', '../assets/font/Munro.fnt');
 
   },
