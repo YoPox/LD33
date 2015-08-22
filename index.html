@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>LD33</title>
+    <script type="text/javascript" src="bower_components/phaser/build/phaser.min.js"></script>
+    <script type="text/javascript" src="js/boot.js"></script>
+    <script type="text/javascript" src="js/load.js"></script>
+    <script type="text/javascript" src="js/menu.js"></script>
+    <script type="text/javascript" src="js/play.js"></script>
+    <script type="text/javascript" src="js/game.js"></script>
+    <meta name="HandheldFriendly" content="true">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <style media="screen">
+      body {
+        background-color: #3F51B5;
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+      }
+      canvas {
+        image-rendering: pixelated;
+      }
+      html {
+        height: 100%;
+      }
+      #cont {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        -webkit-flex-direction: column;
+        -webkit-align-items: center;
+        -webkit-justify-content: center;
+      }
+      @-ms-viewport { width: 100vw ; zoom: 100% ; }
+      @viewport { width: 100vw ; zoom: 100% ; }
+      @-ms-viewport { user-zoom: fixed ; }
+      @viewport { user-zoom: fixed ; }
+    </style>
+  </head>
+  <body>
+    <div id="cont">
+      <div id="game" width="1024" height="576"></div>
+    </div>
+  </body>
+</html>
