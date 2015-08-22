@@ -1,7 +1,5 @@
 // SPRITES
-var rect;
-var text;
-var logo;
+var rect, text, logo;
 
 // STUFF
 var titleEmitter;
@@ -24,9 +22,9 @@ var loadState = {
     game.stage.backgroundColor = "#2B3D73";
 
     // WHITE BACKGROUND
-    var bmd = game.add.bitmapData(1024, 576);
+    var bmd = game.add.bitmapData(1280, 720);
     bmd.ctx.beginPath();
-    bmd.ctx.rect(0, 0, 1024, 576);
+    bmd.ctx.rect(0, 0, 1280, 720);
     bmd.ctx.fillStyle = '#ffffff';
     bmd.ctx.fill();
     rect = game.add.sprite(0, 0, bmd);
@@ -34,7 +32,6 @@ var loadState = {
     // ELLECTRON.COM TEXT
     text = game.add.bitmapText(game.width / 2,  3 * game.height / 4, "Munro", "eLLectron.com", 75);
     text.anchor.set(0.5, 0.5);
-    text.smoothed = false;
 
     // PARTICLES
     titleEmitter = game.add.emitter(game.width / 2 + 1, game.height / 2 - 65, 1000);
