@@ -9,21 +9,23 @@ var loadState = {
   preload: function() {
 
     // BOOT
-    game.load.image("logo", "../assets/logo.png");
-    game.load.image("part", "../assets/bluePart.png");
-    game.load.image("part2", "../assets/redPart.png");
+    game.load.image("logo", "assets/logo.png");
+    game.load.image("part", "assets/bluePart.png");
+    game.load.image("part2", "assets/redPart.png");
     // TITLE
-    game.load.image("title", "../assets/working/title.png");
-    game.load.image("phaser", "../assets/phaser.png");
+    game.load.image("title", "assets/title.png");
+    game.load.image("phaser", "assets/phaser.png");
     // CHOOSE
-    game.load.image("arrow", "../assets/working/arrow.png");
-    game.load.image("ic1", "../assets/working/ic1.png");
-    game.load.image("ic2", "../assets/working/ic2.png");
-    game.load.image("ic3", "../assets/working/ic3.png");
+    game.load.image("arrow", "assets/arrow.png");
+    game.load.image("ic_rand", "assets/ic_rand.png");
+    game.load.image("ic_ok", "assets/ic_ok.png");
+    game.load.image("ic_sword", "assets/ic_sword.png");
+    game.load.image("ic_shield", "assets/ic_shield.png");
+    game.load.image("ic_boots", "assets/ic_boots.png");
     // GAME
-    game.load.image("hero", "../assets/working/dummyHero.png");
+    game.load.image("hero", "assets/dummyHero.png");
     // FONT
-    game.load.bitmapFont('Munro', '../assets/font/Munro.png', '../assets/font/Munro.fnt');
+    game.load.bitmapFont('Munro', 'assets/font/Munro.png', 'assets/font/Munro.fnt');
 
     // MUSIC
     game.load.binary('title_xm', 'assets/audio/title.xm', binaryLoadCallback, this);

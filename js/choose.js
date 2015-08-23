@@ -92,7 +92,7 @@ var chooseState = {
 
 
     // ICONS
-    ic1 = game.add.sprite(720, 120, 'ic1');
+    ic1 = game.add.sprite(720, 120, 'ic_rand');
     ic1.anchor.set(0.5, 0.5);
     ic1.scale.set(2);
     ic1.smoothed = false;
@@ -100,29 +100,29 @@ var chooseState = {
     // ic1.events.onInputOver.add(function() { }, this);
     ic1.events.onInputDown.add(function() {monsterName.text = "Name : " + names[Math.floor(Math.random() * 17)];}, this);
 
-    ic2 = game.add.sprite(720, 300, 'ic2');
+    ic2 = game.add.sprite(720, 300, 'ic_sword');
     ic2.anchor.set(0.5, 0.5);
     ic2.scale.set(2);
     ic2.smoothed = false;
 
-    ic3 = game.add.sprite(720, 420, 'ic3');
+    ic3 = game.add.sprite(720, 420, 'ic_shield');
     ic3.anchor.set(0.5, 0.5);
     ic3.scale.set(2);
     ic3.smoothed = false;
 
-    ic4 = game.add.sprite(720, 540, 'ic4');
+    ic4 = game.add.sprite(720, 540, 'ic_boots');
     ic4.anchor.set(0.5, 0.5);
     ic4.scale.set(2);
     ic4.smoothed = false;
 
-    rand = game.add.sprite(320, 660, 'rand');
+    rand = game.add.sprite(320, 660, 'ic_rand');
     rand.anchor.set(0.5, 0.5);
     rand.scale.set(2);
     rand.smoothed = false;
     rand.inputEnabled = true;
     rand.events.onInputDown.add(function() {shuffleParts();}, this);
 
-    ok = game.add.sprite(960, 660, 'ok');
+    ok = game.add.sprite(960, 660, 'ic_ok');
     ok.anchor.set(0.5, 0.5);
     ok.scale.set(2);
     ok.smoothed = false;

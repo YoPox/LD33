@@ -11,6 +11,7 @@ var actSelection = 1;
 var isMoving = false;
 var up, down, enter;
 var block = false;
+var mute = false;
 
 var menuState = {
 
@@ -19,7 +20,7 @@ var menuState = {
     // MUSIC PLAYBACK
     var buffer = game.cache.getBinary('title_xm');
     ArtRemix.play(buffer);
-    
+
 
     // LOGO
     title = game.add.sprite(game.width / 2, game.height, 'title');
