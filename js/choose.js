@@ -126,6 +126,8 @@ var chooseState = {
     ok.anchor.set(0.5, 0.5);
     ok.scale.set(2);
     ok.smoothed = false;
+    ok.inputEnabled = true;
+    ok.events.onInputDown.add(function() {gameStart();}, this);
 
     // NAME
     monsterName = game.add.bitmapText(784, 86, "Munro", "Name : " + names[actName], 64);
@@ -137,6 +139,9 @@ var chooseState = {
 
     // APPEAR EFFECT
     game.add.tween(game.world).to( { alpha: 1 }, 1500, Phaser.Easing.Exponential.InOut, true);
+    setTimeout(function () {
+      block = false;
+    }, 1500);
 
   },
 
@@ -212,4 +217,37 @@ function updateText() {
   desc2.text = descs2[piece2];
   desc3.text = descs3[piece3];
   monsterName.text = "Name : " + names[actName];
+}
+
+function gameStart() {
+  if (!block) {
+    block = true;
+    // FADE OUT
+    game.add.tween(game.world).to( { alpha: 0 }, 1500, Phaser.Easing.Exponential.InOut, true);
+
+    // DESTROY SPRITES AND CHANGE STATE
+    setTimeout(function () {
+        arr1.destroy();
+        arr1_.destroy();
+        arr2.destroy();
+        arr2_.destroy();
+        arr3.destroy();
+        arr3_.destroy();
+        monsterName.destroy();
+        desc1.destroy();
+        desc2.destroy();
+        desc3.destroy();
+        ic1.destroy();
+        ic2.destroy();
+        ic3.destroy();
+        ic4.destroy();
+        clearRect.destroy();
+        ok.destroy();
+        rand.destroy();
+        p1.destroy();
+        p2.destroy();
+        p3.destroy();
+        game.state.start("play");
+    }, 1500);
+  }
 }

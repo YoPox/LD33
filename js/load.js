@@ -17,6 +17,8 @@ var loadState = {
     game.load.image("phaser", "../assets/phaser.png");
     // CHOOSE
     game.load.image("arrow", "../assets/working/arrow.png");
+    // GAME
+    game.load.image("hero", "../assets/working/dummyHero.png");
     // FONT
     game.load.bitmapFont('Munro', '../assets/font/Munro.png', '../assets/font/Munro.fnt');
 
@@ -47,14 +49,14 @@ var loadState = {
 
     setTimeout(function () {
       titleEmitter.start(false, 750, 10);
-    }, 750);
+    }, 700);
 
     // ELLECTRON's LOGO
     logo = game.add.sprite(game.width / 2 - 128, game.height / 2 - 192, 'logo');
     logo.scale.set(4);
     logo.smoothed = false;
     logo.alpha = 0;
-    game.add.tween(logo).to( { alpha: 1 }, 1500, Phaser.Easing.Exponential.InOut, true);
+    game.add.tween(logo).to( { alpha: 1 }, 1250, Phaser.Easing.Exponential.OutIn, true);
 
     // FINAL FADE OUT
     setTimeout(function () {
@@ -69,7 +71,7 @@ var loadState = {
       logo.destroy();
       rect.destroy();
       text.destroy();
-      game.state.start("menu");
+      game.state.start("choose");
     }, 3500);
 
   },
