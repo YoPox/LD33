@@ -176,11 +176,11 @@ function bite(obj) {
       enemy1.emitter.start(true, 500, 0, 15);
       enemy1.justT = true;
       enemy1.invul = setInterval(function() {
-        enemy1.visible = !enemy1.visible;
+        enemy1.alpha = 1 - enemy1.alpha;
       }, 200);
       setTimeout(function() {
         clearInterval(enemy1.invul);
-        enemy1.visible = true;
+        enemy1.alpha = 1;
         enemy1.justT = false;
       }, 1500);
 
@@ -201,6 +201,9 @@ function spit(obj) {
   item._speed = 400;
   game.add.tween(item).to( { width: 0 }, 1250, Phaser.Easing.Exponential.OutIn, true);
   game.add.tween(item).to( { height: 0 }, 1250, Phaser.Easing.Exponential.OutIn, true);
+  setTimeout(function () {
+    if (item) item.destroy();
+  }, 1250);
   // game.add.tween(item).to( { angle: Math.random() * 30 + 30 }, Math.random() * 2000 + 750, Phaser.Easing.Quadratic.OutIn, true);
   obj.spits.add(item);
 }
@@ -215,11 +218,11 @@ function spitHit(obj1, obj2) {
     obj1.emitter.start(true, 500, 0, 15);
     obj1.justT = true;
     obj1.invul = setInterval(function() {
-      obj1.visible = !obj1.visible;
+      obj1.alpha = 1 - obj1.alpha;
     }, 200);
     setTimeout(function() {
       clearInterval(obj1.invul);
-      obj1.visible = true;
+      obj1.alpha = 1;
       obj1.justT = false;
     }, 1500);
   }
