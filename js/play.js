@@ -1,5 +1,6 @@
 // SPRITES
 var hero;
+var enemy1;
 var biteEffect;
 
 // STUFF
@@ -9,8 +10,8 @@ var capB = -200;
 var step = 10;
 var rotStep = 25;
 var rotCap = 200
-var removeStep2 = 5;
-var removeStep = -5;
+var removeStep2 = 9;
+var removeStep = -3;
 var m, space;
 
 var playState = {
@@ -25,6 +26,14 @@ var playState = {
     hero.angle = 90;
     game.physics.enable(hero, Phaser.Physics.ARCADE);
     hero.body.collideWorldBounds = true;
+
+    // ENEMY1
+    enemy1 = game.add.sprite(Math.floor(Math.random() * 500), Math.floor(Math.random() * 650), 'hero');
+    enemy1.tint = "0x888888";
+    enemy1.anchor.set(0.5, 0.5);
+    enemy1.angle = 90;
+    game.physics.enable(enemy1, Phaser.Physics.ARCADE);
+    enemy1.body.collideWorldBounds = true;
 
     // BITE EFFECT
     biteEffect = game.add.sprite(640, 360, 'effect');
@@ -57,6 +66,8 @@ var playState = {
     hero.body.velocity.y = 0;
     biteEffect.x = hero.x;
     biteEffect.y = hero.y;
+
+    game.physics.arcade.collide(hero, enemy1);
 
     if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
       if (hero.body.angularVelocity > -rotCap)

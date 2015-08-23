@@ -92,13 +92,14 @@ var chooseState = {
 
 
     // ICONS
-    ic1 = game.add.sprite(720, 120, 'ic_rand');
+    ic1 = game.add.sprite(720, 120, 'ic_rand', 0);
     ic1.anchor.set(0.5, 0.5);
     ic1.scale.set(2);
     ic1.smoothed = false;
     ic1.inputEnabled = true;
-    // ic1.events.onInputOver.add(function() { }, this);
-    ic1.events.onInputDown.add(function() {monsterName.text = "Name : " + names[Math.floor(Math.random() * 17)];}, this);
+    ic1.events.onInputOver.add(function() {ic1.frame = 1;}, this);
+    ic1.events.onInputDown.add(function() {ic1.frame = 2; monsterName.text = "Name : " + names[Math.floor(Math.random() * 17)];}, this);
+    ic1.events.onInputOut.add(function() {ic1.frame = 0;}, this);
 
     ic2 = game.add.sprite(720, 300, 'ic_sword');
     ic2.anchor.set(0.5, 0.5);
@@ -115,19 +116,23 @@ var chooseState = {
     ic4.scale.set(2);
     ic4.smoothed = false;
 
-    rand = game.add.sprite(320, 660, 'ic_rand');
+    rand = game.add.sprite(320, 660, 'ic_rand', 0);
     rand.anchor.set(0.5, 0.5);
     rand.scale.set(2);
     rand.smoothed = false;
     rand.inputEnabled = true;
-    rand.events.onInputDown.add(function() {shuffleParts();}, this);
+    rand.events.onInputOver.add(function() {rand.frame = 1;}, this);
+    rand.events.onInputDown.add(function() {rand.frame = 2; shuffleParts();}, this);
+    rand.events.onInputOut.add(function() {rand.frame = 0;}, this);
 
-    ok = game.add.sprite(960, 660, 'ic_ok');
+    ok = game.add.sprite(960, 660, 'ic_ok', 0);
     ok.anchor.set(0.5, 0.5);
     ok.scale.set(2);
     ok.smoothed = false;
     ok.inputEnabled = true;
-    ok.events.onInputDown.add(function() {gameStart();}, this);
+    ok.events.onInputOver.add(function() {ok.frame = 1;}, this);
+    ok.events.onInputDown.add(function() {ok.frame = 2; gameStart();}, this);
+    ok.events.onInputOut.add(function() {ok.frame = 0;}, this);
 
     // NAME
     monsterName = game.add.bitmapText(784, 86, "Munro", "Name : " + names[actName], 64);

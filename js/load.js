@@ -17,8 +17,8 @@ var loadState = {
     game.load.image("phaser", "assets/phaser.png");
     // CHOOSE
     game.load.image("arrow", "assets/arrow.png");
-    game.load.image("ic_rand", "assets/ic_rand.png");
-    game.load.image("ic_ok", "assets/ic_ok.png");
+    game.load.spritesheet("ic_rand", "assets/ic_rand_sheet.png", 32, 32);
+    game.load.spritesheet("ic_ok", "assets/ic_ok_sheet.png", 32, 32);
     game.load.image("ic_sword", "assets/ic_sword.png");
     game.load.image("ic_shield", "assets/ic_shield.png");
     game.load.image("ic_boots", "assets/ic_boots.png");
