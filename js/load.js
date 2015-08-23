@@ -30,6 +30,7 @@ var loadState = {
 
     // MUSIC
     game.load.binary('title_xm', 'assets/audio/title.xm', binaryLoadCallback, this);
+    game.load.binary('cbt_xm', 'assets/audio/cbt.xm', binaryLoadCallback, this);
 
   },
 

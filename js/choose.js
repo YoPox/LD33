@@ -15,15 +15,29 @@ var p1, p2, p3;
 
 // STUFF
 var actName = Math.floor(Math.random() * (names.length));
-var pieces1 = ["zero", "un", "deux", "trois", "quatre"];
-var pieces2 = ["zero", "un", "deux", "trois", "lol", "xptdr"];
-var pieces3 = ["zero", "un", "deux", "trois", "ixous"];
+
+var pieces1 = ["jaw", "horn", "spit", "bomb", "baby"];
+var pieces2 = ["skin", "shell", "thorny", "camo", "shocker"];
+var pieces3 = ["LEGS", "ANTILOPE", "spider", "FROG", "slime"];
+
+var descs1 = ["Quench your thirst for blood\nby bitting your enemies.",
+"Impale other monsters\nwith this harp horn.",
+"Attack your enemies while keeping\nyour distance by spitting.",
+"Shoot a bomb at a group of creatures\nto blow them up into pieces.",
+"Summons your babies to chase\nand kill your enemies."];
+var descs2 = ["Flexible fabulous light\nand shiny skin.",
+"Come in the arena with this\nheavy mastodonte shell.",
+"Become a goddamn hedgehog\nwith thorns and shit.",
+"Sneak behind your enemies or go\nAFK thanks to temporary invisibility.",
+"Get yourself out of shity situations\nusing this shockwave."];
+var descs3 = ["You can walk with those.\nHow cool is that ?",
+"I hate spider.\nBut they can move back faster…",
+"Sprint away you coward.\nI'll catch you anyway.",
+"Dash forward to escape or attack.",
+"Let a sticky disgusting trail\nbehind you to slow other monsters."];
 var piece1 = Math.floor(Math.random() * (pieces1.length));
 var piece2 = Math.floor(Math.random() * (pieces2.length));
 var piece3 = Math.floor(Math.random() * (pieces3.length));
-var descs1 = ["Desc zero", "Desc un", "Desc deux", "Desc trois", "Desc quatre"];
-var descs2 = ["Desc zero", "Desc un", "Desc deux", "Desc trois", "Desc lol", "Desc xptdr"];
-var descs3 = ["Desc zero", "Desc un", "Desc deux", "Desc trois", "Desc ixous"];
 
 var chooseState = {
 
@@ -138,9 +152,9 @@ var chooseState = {
     monsterName = game.add.bitmapText(784, 86, "Munro", "Name : " + names[actName], 64);
 
     // DESCRIPTIONS
-    desc1 = game.add.bitmapText(784, 268, "Munro", descs1[piece1], 64);
-    desc2 = game.add.bitmapText(784, 388, "Munro", descs2[piece2], 64);
-    desc3 = game.add.bitmapText(784, 508, "Munro", descs3[piece3], 64);
+    desc1 = game.add.bitmapText(784, 268, "Munro", descs1[piece1], 30);
+    desc2 = game.add.bitmapText(784, 388, "Munro", descs2[piece2], 30);
+    desc3 = game.add.bitmapText(784, 508, "Munro", descs3[piece3], 30);
 
     // APPEAR EFFECT
     game.add.tween(game.world).to( { alpha: 1 }, 1500, Phaser.Easing.Exponential.InOut, true);
@@ -228,10 +242,12 @@ function gameStart() {
   if (!block) {
     block = true;
     // FADE OUT
+    console.log("A");
     game.add.tween(game.world).to( { alpha: 0 }, 1500, Phaser.Easing.Exponential.InOut, true);
 
     // DESTROY SPRITES AND CHANGE STATE
     setTimeout(function () {
+        console.log("B");
         arr1.destroy();
         arr1_.destroy();
         arr2.destroy();

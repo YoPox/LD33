@@ -21,7 +21,6 @@ var menuState = {
     var buffer = game.cache.getBinary('title_xm');
     ArtRemix.play(buffer);
 
-
     // LOGO
     title = game.add.sprite(game.width / 2, game.height, 'title');
     title.scale.set(4);
