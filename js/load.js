@@ -30,6 +30,7 @@ var loadState = {
     game.load.image("effect", "assets/bite_effect.png");
     game.load.image("part3", "assets/redPart_small.png");
     game.load.image("spit", "assets/spit.png");
+    game.load.image("bomb", "assets/bomb.png");
 
     // FONT
     game.load.bitmapFont('Munro', 'assets/font/Munro.png', 'assets/font/Munro.fnt');

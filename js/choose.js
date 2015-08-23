@@ -31,7 +31,7 @@ var descs2 = ["Flexible fabulous light\nand shiny skin.",
 "Sneak behind your enemies or go\nAFK thanks to temporary invisibility.",
 "Get yourself out of shity situations\nusing this shockwave."];
 var descs3 = ["You can walk with those.\nHow cool is that ?",
-"I hate spider.\nBut they can move back faster…",
+"I hate spider.\nBut they can move back faster...",
 "Sprint away you coward.\nI'll catch you anyway.",
 "Dash forward to escape or attack.",
 "Let a sticky disgusting trail\nbehind you to slow other monsters."];

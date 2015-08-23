@@ -18,6 +18,7 @@ var m, space;
 var spitSpeed = 400;
 var jawDamage = 0;
 var spitDamage = 0;
+var bombDamage = 0;
 
 
 var playState = {
@@ -51,6 +52,9 @@ var playState = {
     // SPIT
     hero.canSpit = true;
     hero.spits = game.add.group();
+    // BOMB
+    hero.canBomb = true;
+    hero.hasBomb = false;
 
     // ENEMY1
     enemy1 = game.add.sprite(Math.floor(Math.random() * 500), Math.floor(Math.random() * 650), 'hero');
@@ -83,7 +87,10 @@ var playState = {
           if (hero.canSpit)
             spit(hero);
           break;
-
+        case 3:
+          if (hero.canBomb)
+            bomb(hero);
+          break;
       }
 
     }, this);
@@ -101,9 +108,11 @@ var playState = {
     hero.emitter.y = hero.biteEffect.y = hero.y;
     enemy1.emitter.x = enemy1.x;
     enemy1.emitter.y = enemy1.y;
+    hero.biteEffect.angle = hero.angle + 90;
 
     // COLLISIONS
     game.physics.arcade.collide(hero, enemy1);
+    game.physics.arcade.collide([hero, enemy1], hero.bomb);
     game.physics.arcade.overlap(hero.spits, enemy1, spitHit, null, this);
 
     if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
@@ -127,14 +136,28 @@ var playState = {
     hero.spits.forEachAlive(function(p){
   		game.physics.arcade.velocityFromAngle(p.angle, p._speed, p.body.velocity);
   	});
+    try {
+      if (hero.hasBomb) {
+        game.physics.arcade.velocityFromAngle(hero.bomb.angle, hero.bomb.speed, hero.bomb.body.velocity);
+        hero.bomb.speed -= 2;
+        if (hero.bomb.speed < 0) {
+          hero.bomb.speed = 0;
+        }
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+
+    }
+
+
+    // CHECKS
     if (hVAngle != 0)
       hVAngle += removeStep * hVAngle / Math.abs(hVAngle);
     if (hero.body.angularVelocity != 0)
       hero.body.angularVelocity -= removeStep2 * hero.body.angularVelocity / Math.abs(hero.body.angularVelocity);
     if (Math.abs(hero.body.angularVelocity) <= Math.abs(removeStep))
       hero.body.angularVelocity = 0;
-
-    hero.biteEffect.angle = hero.angle + 90;
 
     // PARTICLES FADE OUT EFFECT
     hero.emitter.forEachAlive(function(p){
@@ -172,17 +195,7 @@ function bite(obj) {
     || (boundB[0] < enemy1.x + 32 && boundB[0] > enemy1.x - 32 && boundB[1] < enemy1.y + 32 && boundB[1] > enemy1.y - 32)
     || (boundB_[0] < enemy1.x + 32 && boundB_[0] > enemy1.x - 32 && boundB_[1] < enemy1.y + 32 && boundB_[1] > enemy1.y - 32)) {
 
-      enemy1.life -= jawDamage;
-      enemy1.emitter.start(true, 500, 0, 15);
-      enemy1.justT = true;
-      enemy1.invul = setInterval(function() {
-        enemy1.alpha = 1 - enemy1.alpha;
-      }, 200);
-      setTimeout(function() {
-        clearInterval(enemy1.invul);
-        enemy1.alpha = 1;
-        enemy1.justT = false;
-      }, 1500);
+      damage(enemy1, jawDamage);
 
     }
   }
@@ -214,16 +227,74 @@ function spitHit(obj1, obj2) {
     setTimeout(function () {
       obj2.destroy();
     }, 250);
-    obj1.life -= spitDamage;
-    obj1.emitter.start(true, 500, 0, 15);
-    obj1.justT = true;
-    obj1.invul = setInterval(function() {
-      obj1.alpha = 1 - obj1.alpha;
-    }, 200);
-    setTimeout(function() {
-      clearInterval(obj1.invul);
-      obj1.alpha = 1;
-      obj1.justT = false;
-    }, 1500);
+    damage(obj1, spitDamage);
   }
+}
+
+function bomb(obj) {
+  obj.canBomb = false;
+  obj.hasBomb = true;
+  setTimeout(function () {
+    obj.canBomb = true;
+  }, 5000);
+  obj.bomb = game.add.sprite(obj.x + 32 * Math.cos(obj.angle * Math.PI / 180), obj.y + 32 * Math.sin(obj.angle * Math.PI / 180), 'bomb');
+  obj.bomb.anchor.setTo(0.5, 0.5);
+  game.physics.enable(obj.bomb, Phaser.Physics.ARCADE);
+  obj.bomb.angle = obj.angle;
+  game.add.tween(obj.bomb).to( { width: 48 }, 3000, Phaser.Easing.Exponential.OutIn, true);
+  game.add.tween(obj.bomb).to( { height: 48 }, 3000, Phaser.Easing.Exponential.OutIn, true);
+  obj.bomb.intSpeed = 300;
+  obj.bomb.speed = 200;
+  obj.bomb.stop = false;
+  setTimeout(function () {
+    bombCallback(obj.bomb);
+  }, 300);
+  setTimeout(function () {
+    obj.hasBomb = false;
+    obj.bomb.stop = true;
+    clearInterval(obj.bomb.before);
+    obj.bomb.destroy();
+    bombExplode(obj.bomb.x, obj.bomb.y);
+  }, 3000);
+}
+
+function bombExplode(x, y) {
+  if (!enemy1.justT) {
+    if (Math.sqrt((x - enemy1.x)*(x - enemy1.x) + (y - enemy1.y)*(y - enemy1.y)) < 90) {
+      damage(enemy1, bombDamage);
+    }
+  }
+  if (!hero.justT) {
+    if (Math.sqrt((x - hero.x)*(x - hero.x) + (y - hero.y)*(y - hero.y)) < 90) {
+      damage(hero, bombDamage);
+    }
+  }
+}
+
+function bombCallback(bomb) {
+  bomb.alpha = 1 - bomb.alpha;
+  bomb.intSpeed -= 20;
+  if (bomb.intSpeed < 0) {
+    bomb.intSpeed = 5;
+  }
+  if (!bomb.stop) {
+    setTimeout(function () {
+      bombCallback(bomb);
+    }, bomb.intSpeed);
+  }
+
+}
+
+function damage(obj, quantity) {
+  obj.life -= quantity;
+  obj.emitter.start(true, 500, 0, 15);
+  obj.justT = true;
+  obj.invul = setInterval(function() {
+    obj.alpha = 1 - obj.alpha;
+  }, 200);
+  setTimeout(function() {
+    clearInterval(obj.invul);
+    obj.alpha = 1;
+    obj.justT = false;
+  }, 1500);
 }
