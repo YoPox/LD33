@@ -17,10 +17,16 @@ var loadState = {
     game.load.image("phaser", "../assets/phaser.png");
     // CHOOSE
     game.load.image("arrow", "../assets/working/arrow.png");
+    game.load.image("ic1", "../assets/working/ic1.png");
+    game.load.image("ic2", "../assets/working/ic2.png");
+    game.load.image("ic3", "../assets/working/ic3.png");
     // GAME
     game.load.image("hero", "../assets/working/dummyHero.png");
     // FONT
     game.load.bitmapFont('Munro', '../assets/font/Munro.png', '../assets/font/Munro.fnt');
+
+    // MUSIC
+    game.load.binary('title_xm', 'assets/audio/title.xm', binaryLoadCallback, this);
 
   },
 
@@ -71,7 +77,7 @@ var loadState = {
       logo.destroy();
       rect.destroy();
       text.destroy();
-      game.state.start("choose");
+      game.state.start("menu");
     }, 3500);
 
   },
@@ -86,3 +92,9 @@ var loadState = {
   }
 
 };
+
+function binaryLoadCallback(key, data) {
+
+    return new Uint8Array(data);
+
+}
