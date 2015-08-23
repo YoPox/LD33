@@ -35,9 +35,9 @@ var descs3 = ["You can walk with those.\nHow cool is that ?",
 "Sprint away you coward.\nI'll catch you anyway.",
 "Dash forward to escape or attack.",
 "Let a sticky disgusting trail\nbehind you to slow other monsters."];
-var piece1 = Math.floor(Math.random() * (pieces1.length));
-var piece2 = Math.floor(Math.random() * (pieces2.length));
-var piece3 = Math.floor(Math.random() * (pieces3.length));
+var piece1 = Math.floor(Math.random() * (pieces1.length - 1));
+var piece2 = Math.floor(Math.random() * (pieces2.length - 1));
+var piece3 = Math.floor(Math.random() * (pieces3.length - 1));
 
 var chooseState = {
 
@@ -221,10 +221,10 @@ function changeParts(a, b) {
 }
 
 function shuffleParts() {
-  piece1 = Math.floor(Math.random() * (pieces1.length));
-  piece2 = Math.floor(Math.random() * (pieces2.length));
-  piece3 = Math.floor(Math.random() * (pieces3.length));
-  actName = Math.floor(Math.random() * (names.length));
+  piece1 = Math.floor(Math.random() * (pieces1.length - 1));
+  piece2 = Math.floor(Math.random() * (pieces2.length - 1));
+  piece3 = Math.floor(Math.random() * (pieces3.length - 1));
+  actName = Math.floor(Math.random() * (names.length - 1));
   updateText();
 }
 
@@ -242,12 +242,10 @@ function gameStart() {
   if (!block) {
     block = true;
     // FADE OUT
-    console.log("A");
     game.add.tween(game.world).to( { alpha: 0 }, 1500, Phaser.Easing.Exponential.InOut, true);
 
     // DESTROY SPRITES AND CHANGE STATE
     setTimeout(function () {
-        console.log("B");
         arr1.destroy();
         arr1_.destroy();
         arr2.destroy();

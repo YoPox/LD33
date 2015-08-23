@@ -15,6 +15,9 @@ var rotCap = 200
 var removeStep2 = 9;
 var removeStep = -3;
 var m, space;
+var spitSpeed = 400;
+var jawDamage = 0;
+var spitDamage = 0;
 
 
 var playState = {
@@ -22,8 +25,8 @@ var playState = {
   create: function() {
 
     // MUSIC PLAYBACK
-    var buffer = game.cache.getBinary('cbt_xm');
-    ArtRemix.play(buffer);
+    // var buffer = game.cache.getBinary('cbt_xm');
+    // ArtRemix.play(buffer);
 
     // HERO
     hero = game.add.sprite(640, 360, 'hero');
@@ -34,10 +37,10 @@ var playState = {
     hero.life = 100;
     hero.justT = false;
     hero.emitter = game.add.emitter(hero.x, hero.y, 50);
-    hero.emitter.makeParticles('part2');
+    hero.emitter.makeParticles('part3');
     hero.emitter.gravity = 0;
-    hero.emitter.minParticleSpeed.setTo(-100, -100);
-    hero.emitter.maxParticleSpeed.setTo(100, 100);
+    hero.emitter.minParticleSpeed.setTo(-74, -74);
+    hero.emitter.maxParticleSpeed.setTo(74, 74);
     // BITE EFFECT
     hero.biteEffect = game.add.sprite(640, 360, 'effect');
     game.physics.enable(hero.biteEffect, Phaser.Physics.ARCADE);
@@ -45,6 +48,9 @@ var playState = {
     hero.biteEffect.smoothed = false;
     hero.biteEffect.anchor.set(0.5, 3);
     hero.biteEffect.visible = false;
+    // SPIT
+    hero.canSpit = true;
+    hero.spits = game.add.group();
 
     // ENEMY1
     enemy1 = game.add.sprite(Math.floor(Math.random() * 500), Math.floor(Math.random() * 650), 'hero');
@@ -56,10 +62,10 @@ var playState = {
     enemy1.life = 100;
     enemy1.justT = false;
     enemy1.emitter = game.add.emitter(enemy1.x, enemy1.y, 50);
-    enemy1.emitter.makeParticles('part2');
+    enemy1.emitter.makeParticles('part3');
     enemy1.emitter.gravity = 0;
-    enemy1.emitter.minParticleSpeed.setTo(-100, -100);
-    enemy1.emitter.maxParticleSpeed.setTo(100, 100);
+    enemy1.emitter.minParticleSpeed.setTo(-74, -74);
+    enemy1.emitter.maxParticleSpeed.setTo(74, 74);
 
 
 
@@ -68,9 +74,18 @@ var playState = {
     m.onDown.add(function() {if(mute) {ArtRemix.play(lastBuffer);} else {ArtRemix.stop();}}, this);
     space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
     space.onDown.add(function() {
-      if (!hero.biteEffect.visible) {
-        bite(hero);
+      switch (piece1) {
+        case 0:
+          if (!hero.biteEffect.visible)
+            bite(hero);
+          break;
+        case 2:
+          if (hero.canSpit)
+            spit(hero);
+          break;
+
       }
+
     }, this);
 
     // APPEAR EFFECT
@@ -79,12 +94,17 @@ var playState = {
 
   update: function() {
 
+    // UPDATE POS VALUES
     hero.body.velocity.x = 0;
     hero.body.velocity.y = 0;
-    hero.biteEffect.x = hero.x;
-    hero.biteEffect.y = hero.y;
+    hero.emitter.x = hero.biteEffect.x = hero.x;
+    hero.emitter.y = hero.biteEffect.y = hero.y;
+    enemy1.emitter.x = enemy1.x;
+    enemy1.emitter.y = enemy1.y;
 
+    // COLLISIONS
     game.physics.arcade.collide(hero, enemy1);
+    game.physics.arcade.overlap(hero.spits, enemy1, spitHit, null, this);
 
     if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
       if (hero.body.angularVelocity > -rotCap)
@@ -102,7 +122,11 @@ var playState = {
         hVAngle -= step;
     }
 
+    // MOVEMENTS
     game.physics.arcade.velocityFromAngle(hero.angle, hVAngle, hero.body.velocity);
+    hero.spits.forEachAlive(function(p){
+  		game.physics.arcade.velocityFromAngle(p.angle, p._speed, p.body.velocity);
+  	});
     if (hVAngle != 0)
       hVAngle += removeStep * hVAngle / Math.abs(hVAngle);
     if (hero.body.angularVelocity != 0)
@@ -110,13 +134,21 @@ var playState = {
     if (Math.abs(hero.body.angularVelocity) <= Math.abs(removeStep))
       hero.body.angularVelocity = 0;
 
-      hero.biteEffect.angle = hero.angle + 90;
+    hero.biteEffect.angle = hero.angle + 90;
+
+    // PARTICLES FADE OUT EFFECT
+    hero.emitter.forEachAlive(function(p){
+  		p.alpha = p.lifespan / hero.emitter.lifespan;
+  	});
+    enemy1.emitter.forEachAlive(function(p){
+  		p.alpha = p.lifespan / enemy1.emitter.lifespan;
+  	});
 
   },
 
   render: function() {
 
-    game.debug.inputInfo(32, 32);
+    // game.debug.inputInfo(32, 32);
 
   }
 
@@ -129,11 +161,6 @@ function bite(obj) {
     obj.biteEffect.visible = false;
   }, 250);
 
-  // console.log("xA = " + (obj.x + 32 * Math.cos((26.535 - obj.angle) * Math.PI / 180)) + " - yA = " + (obj.y - 32 * Math.sin((26.535 + obj.angle) * Math.PI / 180)));
-  // console.log("xA' = " + (obj.x + 32 * Math.cos((-26.535 - obj.angle) * Math.PI / 180)) + " - yA' = " + (obj.y - 32 * Math.sin((-26.535 + obj.angle) * Math.PI / 180)));
-  // console.log("xB = " + (obj.x + 48 * Math.cos((18.435 - obj.angle) * Math.PI / 180)) + " - yB = " + (obj.y - 48 * Math.sin((18.435 + obj.angle) * Math.PI / 180)));
-  // console.log("xB' = " + (obj.x + 48 * Math.cos((-18.435 - obj.angle) * Math.PI / 180)) + " - yB' = " + (obj.y - 48 * Math.sin((-18.435 + obj.angle) * Math.PI / 180)));
-
   var boundA = [obj.x + 32 * Math.cos((26.535 - obj.angle) * Math.PI / 180), obj.y + 32 * Math.sin((26.535 + obj.angle) * Math.PI / 180)];
   var boundA_ = [obj.x + 32 * Math.cos((-26.535 - obj.angle) * Math.PI / 180), obj.y + 32 * Math.sin((-26.535 + obj.angle) * Math.PI / 180)];
   var boundB = [obj.x + 48 * Math.cos((18.435 - obj.angle) * Math.PI / 180), obj.y + 48 * Math.sin((18.435 + obj.angle) * Math.PI / 180)];
@@ -145,8 +172,8 @@ function bite(obj) {
     || (boundB[0] < enemy1.x + 32 && boundB[0] > enemy1.x - 32 && boundB[1] < enemy1.y + 32 && boundB[1] > enemy1.y - 32)
     || (boundB_[0] < enemy1.x + 32 && boundB_[0] > enemy1.x - 32 && boundB_[1] < enemy1.y + 32 && boundB_[1] > enemy1.y - 32)) {
 
-      console.log("OK");
-      enemy1.tint -= "0x100000";
+      enemy1.life -= jawDamage;
+      enemy1.emitter.start(true, 500, 0, 15);
       enemy1.justT = true;
       enemy1.invul = setInterval(function() {
         enemy1.visible = !enemy1.visible;
@@ -158,5 +185,42 @@ function bite(obj) {
       }, 1500);
 
     }
+  }
+}
+
+function spit(obj) {
+  obj.canSpit = false;
+  setTimeout(function () {
+    obj.canSpit = true;
+  }, spitSpeed);
+  var item = game.add.sprite(obj.x + 32 * Math.cos(obj.angle * Math.PI / 180), obj.y + 32 * Math.sin(obj.angle * Math.PI / 180), 'spit');
+  item.anchor.setTo(0.5, 0.5);
+  game.physics.enable(item, Phaser.Physics.ARCADE);
+  item.angle = obj.angle;
+  item.scale.set(2);
+  item._speed = 400;
+  game.add.tween(item).to( { width: 0 }, 1250, Phaser.Easing.Exponential.OutIn, true);
+  game.add.tween(item).to( { height: 0 }, 1250, Phaser.Easing.Exponential.OutIn, true);
+  // game.add.tween(item).to( { angle: Math.random() * 30 + 30 }, Math.random() * 2000 + 750, Phaser.Easing.Quadratic.OutIn, true);
+  obj.spits.add(item);
+}
+
+function spitHit(obj1, obj2) {
+  if (!obj1.justT) {
+    game.add.tween(obj2).to( { alpha: 0 }, 250, Phaser.Easing.Exponential.InOut, true);
+    setTimeout(function () {
+      obj2.destroy();
+    }, 250);
+    obj1.life -= spitDamage;
+    obj1.emitter.start(true, 500, 0, 15);
+    obj1.justT = true;
+    obj1.invul = setInterval(function() {
+      obj1.visible = !obj1.visible;
+    }, 200);
+    setTimeout(function() {
+      clearInterval(obj1.invul);
+      obj1.visible = true;
+      obj1.justT = false;
+    }, 1500);
   }
 }

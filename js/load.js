@@ -12,9 +12,11 @@ var loadState = {
     game.load.image("logo", "assets/logo.png");
     game.load.image("part", "assets/bluePart.png");
     game.load.image("part2", "assets/redPart.png");
+
     // TITLE
     game.load.image("title", "assets/title.png");
     game.load.image("phaser", "assets/phaser.png");
+
     // CHOOSE
     game.load.image("arrow", "assets/arrow.png");
     game.load.spritesheet("ic_rand", "assets/ic_rand_sheet.png", 32, 32);
@@ -22,9 +24,13 @@ var loadState = {
     game.load.image("ic_sword", "assets/ic_sword.png");
     game.load.image("ic_shield", "assets/ic_shield.png");
     game.load.image("ic_boots", "assets/ic_boots.png");
+
     // GAME
     game.load.image("hero", "assets/dummyHero.png");
     game.load.image("effect", "assets/bite_effect.png");
+    game.load.image("part3", "assets/redPart_small.png");
+    game.load.image("spit", "assets/spit.png");
+
     // FONT
     game.load.bitmapFont('Munro', 'assets/font/Munro.png', 'assets/font/Munro.fnt');
 

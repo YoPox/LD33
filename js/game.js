@@ -8,7 +8,7 @@ game.state.add("play", playState);
 // game.state.add("win", winState);
 
 // INIT MUSIC
-var ArtRemix;
-ArtRemix = new ChiptuneJsPlayer(new ChiptuneJsConfig(1));
+// var ArtRemix;
+// ArtRemix = new ChiptuneJsPlayer(new ChiptuneJsConfig(1));
 
 game.state.start("boot");
