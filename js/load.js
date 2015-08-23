@@ -24,6 +24,7 @@ var loadState = {
     game.load.image("ic_boots", "assets/ic_boots.png");
     // GAME
     game.load.image("hero", "assets/dummyHero.png");
+    game.load.image("effect", "assets/bite_effect.png");
     // FONT
     game.load.bitmapFont('Munro', 'assets/font/Munro.png', 'assets/font/Munro.fnt');
 
