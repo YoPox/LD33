@@ -1,6 +1,3 @@
-// SPRITES
-var dummy;
-
 // MONSTERS
 var hero;
 var enemy1;
@@ -22,24 +19,21 @@ var playState = {
 
   create: function() {
 
-    dummy = game.add.sprite(0, 0, 'LOL');
-    dummy.anchor.set(0.5, 0.5);
-
     // MUSIC PLAYBACK
     var buffer = game.cache.getBinary('cbt_xm');
     ArtRemix.play(buffer);
 
     // HERO
     hero = game.add.sprite(640, 360, 'hero');
+    initCapacities(hero);
     makeParts(hero, piece1, piece2, piece3);
     hero.id = "hero";
-    initCapacities(hero);
 
     // ENEMY1
     enemy1 = game.add.sprite(Math.floor(Math.random() * 500), Math.floor(Math.random() * 650), 'hero');
-    makeParts(enemy1, 1, 2, 3);
-    enemy1.id = "enemy1";
     initCapacities(enemy1);
+    makeParts(enemy1, Math.floor(Math.random() * 4), Math.floor(Math.random() * 4), Math.floor(Math.random() * 4));
+    enemy1.id = "enemy1";
     doIA(enemy1, "sniper");
 
     // KEYBOARD
@@ -134,21 +128,19 @@ var playState = {
 
     // HORNS
     if (hero.hornHitbox) {
-      var hornX = hero.x + 96 * Math.cos(-hero.angle * Math.PI / 180);
-      var hornY = hero.y - 96 * Math.sin(-hero.angle * Math.PI / 180);
-      dummy.x = hornX;
-      dummy.y = hornY;
+      var hornX = hero.x + 96 * Math.cos(hero.angle * Math.PI / 180);
+      var hornY = hero.y + 96 * Math.sin(hero.angle * Math.PI / 180);
       if (!enemy1.justT) {
-        if (hornX < enemy1.x + 32 && hornX > enemy1.x - 32 && hornY < enemy1.y + 32 && hornX > enemy1.y - 32) {
+        if (hornX < enemy1.x + 32 && hornX > enemy1.x - 32 && hornY < enemy1.y + 32 && hornY > enemy1.y - 32) {
           damage(enemy1, hornDamage);
         }
       }
     }
     if (enemy1.hornHitbox) {
-      var hornX = enemy1.x + 96 * Math.cos(-enemy1.angle * Math.PI / 180);
-      var hornY = enemy1.y - 96 * Math.sin(-enemy1.angle * Math.PI / 180);
+      var hornX = enemy1.x + 96 * Math.cos(enemy1.angle * Math.PI / 180);
+      var hornY = enemy1.y + 96 * Math.sin(enemy1.angle * Math.PI / 180);
       if (!hero.justT) {
-        if (hornX < hero.x + 32 && hornX > hero.x - 32 && hornY < hero.y + 32 && hornX > hero.y - 32) {
+        if (hornX < hero.x + 32 && hornX > hero.x - 32 && hornY < hero.y + 32 && hornY > hero.y - 32) {
           damage(hero, hornDamage);
         }
       }
@@ -202,7 +194,7 @@ var playState = {
   render: function() {
 
     // game.debug.inputInfo(32, 32);
-    game.debug.body(hero);
+    // game.debug.body(hero);
 
   }
 
@@ -532,9 +524,9 @@ function makeParts(obj, p1, p2, p3) {
     case 2:
       obj.loadTexture('body3');
       break;
-    // case 3:
-    //   obj.loadTexture('body4');
-    //   break;
+    case 3:
+      obj.loadTexture('body4');
+      break;
   }
   // MOUTH GRAPHICS
   switch (p1) {

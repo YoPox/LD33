@@ -44,8 +44,7 @@ var loadState = {
     game.load.image("mouth2_1", "assets/mouth_horn_skin.png");
     game.load.image("mouth2_2", "assets/mouth_horn_shell.png");
     game.load.image("mouth2_3", "assets/mouth_horn_thorny.png");
-    // game.load.image("mouth2_4", "assets/mouth_horn_shocker.png");
-    game.load.image("mouth2_4", "assets/mouth_horn_shell.png");
+    game.load.image("mouth2_4", "assets/mouth_horn_shocker.png");
     // game.load.spritesheet("mouth3_1", "assets/mouth_spit_skin.png", 32, 32);
     // game.load.spritesheet("mouth3_2", "assets/mouth_spit_shell.png", 32, 32);
     // game.load.spritesheet("mouth3_3", "assets/mouth_spit_thorny.png", 32, 32);
@@ -67,6 +66,7 @@ var loadState = {
     game.load.image("body1", "assets/body_skin.png");
     game.load.spritesheet("body2", "assets/body_shell.png", 64, 64);
     game.load.image("body3", "assets/body_thorny.png");
+    game.load.spritesheet("body4", "assets/body_shocker.png", 64, 64);
 
     // FONT
     game.load.bitmapFont('Munro', 'assets/font/Munro.png', 'assets/font/Munro.fnt');
