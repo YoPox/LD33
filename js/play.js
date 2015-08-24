@@ -99,15 +99,15 @@ var playState = {
     enemy1.emitter.y = enemy1.y;
     // MOUTH
     hero.mouth.angle = hero.angle;
-    hero.mouth.x = hero.x + 32 * Math.cos(hero.angle * Math.PI / 180);
-    hero.mouth.y = hero.y + 32 * Math.sin(hero.angle * Math.PI / 180);
+    hero.mouth.x = hero.x + (32 + (4 / (1 + Math.exp(-0.02 * hero.hVAngle)) - 2)) * Math.cos(hero.angle * Math.PI / 180);
+    hero.mouth.y = hero.y + (32 + (4 / (1 + Math.exp(-0.02 * hero.hVAngle)) - 2)) * Math.sin(hero.angle * Math.PI / 180);
     enemy1.mouth.angle = enemy1.angle;
-    enemy1.mouth.x = enemy1.x + 32 * Math.cos(enemy1.angle * Math.PI / 180);
-    enemy1.mouth.y = enemy1.y + 32 * Math.sin(enemy1.angle * Math.PI / 180);
+    enemy1.mouth.x = enemy1.x + (32 + (4 / (1 + Math.exp(-0.02 * enemy1.hVAngle)) - 2)) * Math.cos(enemy1.angle * Math.PI / 180);
+    enemy1.mouth.y = enemy1.y + (32 + (4 / (1 + Math.exp(-0.02 * enemy1.hVAngle)) - 2)) * Math.sin(enemy1.angle * Math.PI / 180);
 
     // COLLISIONS
     game.physics.arcade.collide(hero, enemy1);
-    game.physics.arcade.collide(enemy1, hero.bomb, bombTouch, null, this);
+    game.physics.arcade.collide(enemy1, hero.bomb);
     game.physics.arcade.overlap(hero.spits, enemy1, spitHit, null, this);
 
     if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
@@ -254,7 +254,13 @@ function initCapacities(obj) {
 function bite(obj) {
 
   obj.canBite = false;
-  obj.mouth.frame = 3;
+  obj.mouth.frame = 1;
+  setTimeout(function () {
+    obj.mouth.frame = 2;
+  }, 50);
+  setTimeout(function () {
+    obj.mouth.frame = 1;
+  }, 200);
   setTimeout(function () {
     obj.mouth.frame = 0;
     obj.canBite = true;
@@ -389,11 +395,6 @@ function bombCallback(bomb) {
     }, bomb.intSpeed);
   }
 
-}
-
-function bombTouch(obj1, obj2) {
-  console.log("OK");
-  obj2.speed = 0;
 }
 
 function damage(obj, quantity) {
