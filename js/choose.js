@@ -33,9 +33,9 @@ var descs3 = ["You can walk with those.\nHow cool is that ?",
 "Sprint away you coward.\nI'll catch you anyway.",
 "Dash forward to escape or attack.",
 "Let a sticky disgusting trail\nbehind you to slow other monsters."];
-var piece1 = Math.floor(Math.random() * (pieces1.length - 1));
-var piece2 = Math.floor(Math.random() * (pieces2.length - 1));
-var piece3 = Math.floor(Math.random() * (pieces3.length - 1));
+var piece1 = Math.floor(Math.random() * (pieces1.length));
+var piece2 = Math.floor(Math.random() * (pieces2.length));
+var piece3 = Math.floor(Math.random() * (pieces3.length));
 
 var piece1_sprite = [['mouth1_1', 'mouth1_2', 'mouth1_3', 'mouth1_4'],
                     ['mouth2_1', 'mouth2_2', 'mouth2_3', 'mouth2_4'],
@@ -49,8 +49,8 @@ var chooseState = {
   create: function() {
 
     // MUSIC PLAYBACK
-    var buffer = game.cache.getBinary('selec_xm');
-    ArtRemix.play(buffer);
+    // var buffer = game.cache.getBinary('selec_xm');
+    // ArtRemix.play(buffer);
 
     // ARRAYS
     arr1 = game.add.sprite(160, 180, 'arrow');
@@ -243,10 +243,10 @@ function changeParts(a, b) {
 }
 
 function shuffleParts() {
-  piece1 = Math.floor(Math.random() * (pieces1.length - 1));
-  piece2 = Math.floor(Math.random() * (pieces2.length - 1));
-  piece3 = Math.floor(Math.random() * (pieces3.length - 1));
-  actName = Math.floor(Math.random() * (names.length - 1));
+  piece1 = Math.floor(Math.random() * (pieces1.length));
+  piece2 = Math.floor(Math.random() * (pieces2.length));
+  piece3 = Math.floor(Math.random() * (pieces3.length));
+  actName = Math.floor(Math.random() * (names.length));
   updateText();
 }
 

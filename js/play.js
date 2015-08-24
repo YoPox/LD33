@@ -1,6 +1,8 @@
 // MONSTERS
 var hero;
 var enemy1;
+var enemy2;
+var enemy3;
 
 // STUFF
 var rotStep = 25;
@@ -20,21 +22,56 @@ var playState = {
   create: function() {
 
     // MUSIC PLAYBACK
-    var buffer = game.cache.getBinary('cbt_xm');
-    ArtRemix.play(buffer);
+    // var buffer = game.cache.getBinary('cbt_xm');
+    // ArtRemix.play(buffer);
 
-    // HERO
-    hero = game.add.sprite(640, 360, 'hero');
+    var heroPosition = Math.floor(Math.random() * 4);
+
+    switch (heroPosition) {
+      case 0:
+        hero = game.add.sprite(128, 128, 'hero');
+        enemy1 = game.add.sprite(1152, 128, 'hero');
+        enemy2 = game.add.sprite(128, 592, 'hero');
+        enemy3 = game.add.sprite(1152, 592, 'hero');
+        break;
+      case 1:
+        hero = game.add.sprite(1152, 128, 'hero');
+        enemy1 = game.add.sprite(128, 128, 'hero');
+        enemy2 = game.add.sprite(128, 592, 'hero');
+        enemy3 = game.add.sprite(1152, 592, 'hero');
+        break;
+      case 2:
+        hero = game.add.sprite(128, 592, 'hero');
+        enemy1 = game.add.sprite(1152, 128, 'hero');
+        enemy2 = game.add.sprite(128, 128, 'hero');
+        enemy3 = game.add.sprite(1152, 592, 'hero');
+        break;
+      case 3:
+        hero = game.add.sprite(1152, 592, 'hero');
+        enemy1 = game.add.sprite(1152, 128, 'hero');
+        enemy2 = game.add.sprite(128, 592, 'hero');
+        enemy3 = game.add.sprite(1152, 128, 'hero');
+        break;
+    }
+
     initCapacities(hero);
     makeParts(hero, piece1, piece2, piece3);
     hero.id = "hero";
 
-    // ENEMY1
-    enemy1 = game.add.sprite(Math.floor(Math.random() * 500), Math.floor(Math.random() * 650), 'hero');
     initCapacities(enemy1);
     makeParts(enemy1, Math.floor(Math.random() * 4), Math.floor(Math.random() * 4), Math.floor(Math.random() * 4));
     enemy1.id = "enemy1";
-    doIA(enemy1, "sniper");
+    doIA(enemy1);
+
+    initCapacities(enemy2);
+    makeParts(enemy2, Math.floor(Math.random() * 4), Math.floor(Math.random() * 4), Math.floor(Math.random() * 4));
+    enemy2.id = "enemy2";
+    doIA(enemy2);
+
+    initCapacities(enemy3);
+    makeParts(enemy3, Math.floor(Math.random() * 4), Math.floor(Math.random() * 4), Math.floor(Math.random() * 4));
+    enemy3.id = "enemy3";
+    doIA(enemy3);
 
     // KEYBOARD
     m = game.input.keyboard.addKey(Phaser.Keyboard.M);
@@ -82,7 +119,6 @@ var playState = {
 
     }, this);
 
-
     // APPEAR EFFECT
     game.add.tween(game.world).to( { alpha: 1 }, 1500, Phaser.Easing.Exponential.InOut, true);
   },
@@ -97,19 +133,36 @@ var playState = {
     hero.emitter.y = hero.y;
     enemy1.emitter.x = enemy1.x;
     enemy1.emitter.y = enemy1.y;
+    enemy2.emitter.x = enemy2.x;
+    enemy2.emitter.y = enemy2.y;
+    enemy3.emitter.x = enemy3.x;
+    enemy3.emitter.y = enemy3.y;
     // MOUTH
     hero.mouth.angle = hero.angle;
-    hero.mouth.x = hero.x + (32 + (4 / (1 + Math.exp(-0.02 * hero.hVAngle)) - 2)) * Math.cos(hero.angle * Math.PI / 180);
-    hero.mouth.y = hero.y + (32 + (4 / (1 + Math.exp(-0.02 * hero.hVAngle)) - 2)) * Math.sin(hero.angle * Math.PI / 180);
+    hero.mouth.x = hero.x + (32 + (6 / (1 + Math.exp(-0.015 * hero.hVAngle)) - 3)) * Math.cos(hero.angle * Math.PI / 180);
+    hero.mouth.y = hero.y + (32 + (6 / (1 + Math.exp(-0.015 * hero.hVAngle)) - 3)) * Math.sin(hero.angle * Math.PI / 180);
     enemy1.mouth.angle = enemy1.angle;
     enemy1.mouth.x = enemy1.x + (32 + (4 / (1 + Math.exp(-0.02 * enemy1.hVAngle)) - 2)) * Math.cos(enemy1.angle * Math.PI / 180);
     enemy1.mouth.y = enemy1.y + (32 + (4 / (1 + Math.exp(-0.02 * enemy1.hVAngle)) - 2)) * Math.sin(enemy1.angle * Math.PI / 180);
+    enemy2.mouth.angle = enemy2.angle;
+    enemy2.mouth.x = enemy2.x + (32 + (4 / (1 + Math.exp(-0.02 * enemy2.hVAngle)) - 2)) * Math.cos(enemy2.angle * Math.PI / 180);
+    enemy2.mouth.y = enemy2.y + (32 + (4 / (1 + Math.exp(-0.02 * enemy2.hVAngle)) - 2)) * Math.sin(enemy2.angle * Math.PI / 180);
+    enemy3.mouth.angle = enemy3.angle;
+    enemy3.mouth.x = enemy3.x + (32 + (4 / (1 + Math.exp(-0.02 * enemy3.hVAngle)) - 2)) * Math.cos(enemy3.angle * Math.PI / 180);
+    enemy3.mouth.y = enemy3.y + (32 + (4 / (1 + Math.exp(-0.02 * enemy3.hVAngle)) - 2)) * Math.sin(enemy3.angle * Math.PI / 180);
 
     // COLLISIONS
-    game.physics.arcade.collide(hero, enemy1);
-    game.physics.arcade.collide(enemy1, hero.bomb);
-    game.physics.arcade.overlap(hero.spits, enemy1, spitHit, null, this);
+    game.physics.arcade.collide(hero, [enemy1, enemy2, enemy3]);
+    game.physics.arcade.collide(enemy1, [hero, enemy2, enemy3]);
+    game.physics.arcade.collide(enemy2, [enemy1, hero, enemy3]);
+    game.physics.arcade.collide(enemy3, [enemy1, enemy2, hero]);
+    game.physics.arcade.collide([hero, enemy1, enemy2, enemy3], [hero.bomb, enemy1.bomb, enemy2.bomb, enemy3.bomb]);
+    game.physics.arcade.overlap(hero.spits, [enemy1, enemy2, enemy3], spitHit, null, this);
+    game.physics.arcade.overlap(enemy1.spits, [hero, enemy2, enemy3], spitHit, null, this);
+    game.physics.arcade.overlap(enemy2.spits, [enemy1, hero, enemy3], spitHit, null, this);
+    game.physics.arcade.overlap(enemy3.spits, [enemy1, enemy2, hero], spitHit, null, this);
 
+    // PLAYER CONTROLS
     if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
       if (hero.body.angularVelocity > -rotCap)
         hero.body.angularVelocity -= rotStep;
@@ -135,6 +188,16 @@ var playState = {
           damage(enemy1, hornDamage);
         }
       }
+      if (!enemy2.justT) {
+        if (hornX < enemy2.x + 32 && hornX > enemy2.x - 32 && hornY < enemy2.y + 32 && hornY > enemy2.y - 32) {
+          damage(enemy2, hornDamage);
+        }
+      }
+      if (!enemy3.justT) {
+        if (hornX < enemy3.x + 32 && hornX > enemy3.x - 32 && hornY < enemy3.y + 32 && hornY > enemy3.y - 32) {
+          damage(enemy3, hornDamage);
+        }
+      }
     }
     if (enemy1.hornHitbox) {
       var hornX = enemy1.x + 96 * Math.cos(enemy1.angle * Math.PI / 180);
@@ -144,13 +207,72 @@ var playState = {
           damage(hero, hornDamage);
         }
       }
+      if (!enemy2.justT) {
+        if (hornX < enemy2.x + 32 && hornX > enemy2.x - 32 && hornY < enemy2.y + 32 && hornY > enemy2.y - 32) {
+          damage(enemy2, hornDamage);
+        }
+      }
+      if (!enemy3.justT) {
+        if (hornX < enemy3.x + 32 && hornX > enemy3.x - 32 && hornY < enemy3.y + 32 && hornY > enemy3.y - 32) {
+          damage(enemy3, hornDamage);
+        }
+      }
+    }
+    if (enemy2.hornHitbox) {
+      var hornX = enemy2.x + 96 * Math.cos(enemy2.angle * Math.PI / 180);
+      var hornY = enemy2.y + 96 * Math.sin(enemy2.angle * Math.PI / 180);
+      if (!hero.justT) {
+        if (hornX < hero.x + 32 && hornX > hero.x - 32 && hornY < hero.y + 32 && hornY > hero.y - 32) {
+          damage(hero, hornDamage);
+        }
+      }
+      if (!enemy1.justT) {
+        if (hornX < enemy1.x + 32 && hornX > enemy1.x - 32 && hornY < enemy1.y + 32 && hornY > enemy1.y - 32) {
+          damage(enemy1, hornDamage);
+        }
+      }
+      if (!enemy3.justT) {
+        if (hornX < enemy3.x + 32 && hornX > enemy3.x - 32 && hornY < enemy3.y + 32 && hornY > enemy3.y - 32) {
+          damage(enemy3, hornDamage);
+        }
+      }
+    }
+    if (enemy3.hornHitbox) {
+      var hornX = enemy3.x + 96 * Math.cos(enemy3.angle * Math.PI / 180);
+      var hornY = enemy3.y + 96 * Math.sin(enemy3.angle * Math.PI / 180);
+      if (!hero.justT) {
+        if (hornX < hero.x + 32 && hornX > hero.x - 32 && hornY < hero.y + 32 && hornY > hero.y - 32) {
+          damage(hero, hornDamage);
+        }
+      }
+      if (!enemy1.justT) {
+        if (hornX < enemy1.x + 32 && hornX > enemy1.x - 32 && hornY < enemy1.y + 32 && hornY > enemy1.y - 32) {
+          damage(enemy1, hornDamage);
+        }
+      }
+      if (!enemy2.justT) {
+        if (hornX < enemy2.x + 32 && hornX > enemy2.x - 32 && hornY < enemy2.y + 32 && hornY > enemy2.y - 32) {
+          damage(enemy2, hornDamage);
+        }
+      }
     }
 
     // MOVEMENTS
     game.physics.arcade.velocityFromAngle(hero.angle, hero.hVAngle, hero.body.velocity);
     game.physics.arcade.velocityFromAngle(enemy1.angle, enemy1.hVAngle, enemy1.body.velocity);
+    game.physics.arcade.velocityFromAngle(enemy2.angle, enemy2.hVAngle, enemy2.body.velocity);
+    game.physics.arcade.velocityFromAngle(enemy3.angle, enemy3.hVAngle, enemy3.body.velocity);
 
     hero.spits.forEachAlive(function(p){
+  		game.physics.arcade.velocityFromAngle(p.angle, p._speed, p.body.velocity);
+  	});
+    enemy1.spits.forEachAlive(function(p){
+  		game.physics.arcade.velocityFromAngle(p.angle, p._speed, p.body.velocity);
+  	});
+    enemy2.spits.forEachAlive(function(p){
+  		game.physics.arcade.velocityFromAngle(p.angle, p._speed, p.body.velocity);
+  	});
+    enemy3.spits.forEachAlive(function(p){
   		game.physics.arcade.velocityFromAngle(p.angle, p._speed, p.body.velocity);
   	});
     if (hero.hasBomb) {
@@ -160,12 +282,38 @@ var playState = {
         hero.bomb.speed = 0;
       }
     }
+    if (enemy1.hasBomb) {
+      game.physics.arcade.velocityFromAngle(enemy1.bomb.angle, enemy1.bomb.speed, enemy1.bomb.body.velocity);
+      enemy1.bomb.speed -= 1;
+      if (enemy1.bomb.speed < 0) {
+        enemy1.bomb.speed = 0;
+      }
+    }
+    if (enemy2.hasBomb) {
+      game.physics.arcade.velocityFromAngle(enemy2.bomb.angle, enemy2.bomb.speed, enemy2.bomb.body.velocity);
+      enemy2.bomb.speed -= 1;
+      if (enemy2.bomb.speed < 0) {
+        enemy2.bomb.speed = 0;
+      }
+    }
+    if (enemy3.hasBomb) {
+      game.physics.arcade.velocityFromAngle(enemy3.bomb.angle, enemy3.bomb.speed, enemy3.bomb.body.velocity);
+      enemy3.bomb.speed -= 1;
+      if (enemy3.bomb.speed < 0) {
+        enemy3.bomb.speed = 0;
+      }
+    }
 
     // CHECKS
     if (hero.hVAngle != 0)
       hero.hVAngle += removeStep * hero.hVAngle / Math.abs(hero.hVAngle);
     if (enemy1.hVAngle != 0)
       enemy1.hVAngle += removeStep * enemy1.hVAngle / Math.abs(enemy1.hVAngle);
+    if (enemy2.hVAngle != 0)
+      enemy2.hVAngle += removeStep * enemy2.hVAngle / Math.abs(enemy2.hVAngle);
+    if (enemy3.hVAngle != 0)
+      enemy3.hVAngle += removeStep * enemy3.hVAngle / Math.abs(enemy3.hVAngle);
+
     if (hero.body.angularVelocity != 0)
       hero.body.angularVelocity -= removeStep2 * hero.body.angularVelocity / Math.abs(hero.body.angularVelocity);
     if (Math.abs(hero.body.angularVelocity) <= Math.abs(removeStep))
@@ -174,6 +322,14 @@ var playState = {
       enemy1.body.angularVelocity -= removeStep2 * enemy1.body.angularVelocity / Math.abs(enemy1.body.angularVelocity);
     if (Math.abs(enemy1.body.angularVelocity) <= Math.abs(removeStep))
       enemy1.body.angularVelocity = 0;
+    if (enemy2.body.angularVelocity != 0)
+      enemy2.body.angularVelocity -= removeStep2 * enemy2.body.angularVelocity / Math.abs(enemy2.body.angularVelocity);
+    if (Math.abs(enemy2.body.angularVelocity) <= Math.abs(removeStep))
+      enemy2.body.angularVelocity = 0;
+    if (enemy3.body.angularVelocity != 0)
+      enemy3.body.angularVelocity -= removeStep2 * enemy3.body.angularVelocity / Math.abs(enemy3.body.angularVelocity);
+    if (Math.abs(enemy3.body.angularVelocity) <= Math.abs(removeStep))
+      enemy3.body.angularVelocity = 0;
 
     // PARTICLES FADE OUT EFFECT
     hero.emitter.forEachAlive(function(p){
@@ -182,11 +338,23 @@ var playState = {
     enemy1.emitter.forEachAlive(function(p){
   		p.alpha = p.lifespan / enemy1.emitter.lifespan;
   	});
+    enemy2.emitter.forEachAlive(function(p){
+  		p.alpha = p.lifespan / enemy2.emitter.lifespan;
+  	});
+    enemy3.emitter.forEachAlive(function(p){
+  		p.alpha = p.lifespan / enemy3.emitter.lifespan;
+  	});
     hero.shocker.forEachAlive(function(p){
   		p.alpha = p.lifespan / hero.emitter.lifespan;
   	});
     enemy1.shocker.forEachAlive(function(p){
   		p.alpha = p.lifespan / enemy1.emitter.lifespan;
+  	});
+    enemy2.shocker.forEachAlive(function(p){
+  		p.alpha = p.lifespan / enemy2.emitter.lifespan;
+  	});
+    enemy3.shocker.forEachAlive(function(p){
+  		p.alpha = p.lifespan / enemy3.emitter.lifespan;
   	});
 
   },
@@ -281,6 +449,26 @@ function bite(obj) {
 
     }
   }
+  if (!enemy2.justT && obj.id != enemy2.id) {
+    if ((boundA[0] < enemy2.x + 32 && boundA[0] > enemy2.x - 32 && boundA[1] < enemy2.y + 32 && boundA[1] > enemy2.y - 32)
+    || (boundA_[0] < enemy2.x + 32 && boundA_[0] > enemy2.x - 32 && boundA_[1] < enemy2.y + 32 && boundA_[1] > enemy2.y - 32)
+    || (boundB[0] < enemy2.x + 32 && boundB[0] > enemy2.x - 32 && boundB[1] < enemy2.y + 32 && boundB[1] > enemy2.y - 32)
+    || (boundB_[0] < enemy2.x + 32 && boundB_[0] > enemy2.x - 32 && boundB_[1] < enemy2.y + 32 && boundB_[1] > enemy2.y - 32)) {
+
+      damage(enemy2, jawDamage);
+
+    }
+  }
+  if (!enemy3.justT && obj.id != enemy3.id) {
+    if ((boundA[0] < enemy3.x + 32 && boundA[0] > enemy3.x - 32 && boundA[1] < enemy3.y + 32 && boundA[1] > enemy3.y - 32)
+    || (boundA_[0] < enemy3.x + 32 && boundA_[0] > enemy3.x - 32 && boundA_[1] < enemy3.y + 32 && boundA_[1] > enemy3.y - 32)
+    || (boundB[0] < enemy3.x + 32 && boundB[0] > enemy3.x - 32 && boundB[1] < enemy3.y + 32 && boundB[1] > enemy3.y - 32)
+    || (boundB_[0] < enemy3.x + 32 && boundB_[0] > enemy3.x - 32 && boundB_[1] < enemy3.y + 32 && boundB_[1] > enemy3.y - 32)) {
+
+      damage(enemy3, jawDamage);
+
+    }
+  }
   if (!hero.justT && obj.id != hero.id) {
     if ((boundA[0] < hero.x + 32 && boundA[0] > hero.x - 32 && boundA[1] < hero.y + 32 && boundA[1] > hero.y - 32)
     || (boundA_[0] < hero.x + 32 && boundA_[0] > hero.x - 32 && boundA_[1] < hero.y + 32 && boundA_[1] > hero.y - 32)
@@ -298,7 +486,7 @@ function spit(obj) {
   setTimeout(function () {
     obj.canSpit = true;
   }, spitSpeed);
-  var item = game.add.sprite(obj.x + 38 * Math.cos(obj.angle * Math.PI / 180), obj.y + 38 * Math.sin(obj.angle * Math.PI / 180), 'spit', 0);
+  var item = game.add.sprite(obj.x + 58 * Math.cos(obj.angle * Math.PI / 180), obj.y + 58 * Math.sin(obj.angle * Math.PI / 180), 'spit', 0);
   item.anchor.setTo(0.5, 0.5);
   game.physics.enable(item, Phaser.Physics.ARCADE);
   item.angle = obj.angle;
@@ -376,6 +564,16 @@ function bombExplode(x, y) {
       damage(enemy1, bombDamage);
     }
   }
+  if (!enemy2.justT) {
+    if (Math.sqrt((x - enemy2.x)*(x - enemy2.x) + (y - enemy2.y)*(y - enemy2.y)) < 100) {
+      damage(enemy2, bombDamage);
+    }
+  }
+  if (!enemy3.justT) {
+    if (Math.sqrt((x - enemy3.x)*(x - enemy3.x) + (y - enemy3.y)*(y - enemy3.y)) < 100) {
+      damage(enemy3, bombDamage);
+    }
+  }
   if (!hero.justT) {
     if (Math.sqrt((x - hero.x)*(x - hero.x) + (y - hero.y)*(y - hero.y)) < 100) {
       damage(hero, bombDamage);
@@ -431,6 +629,24 @@ function shocker(obj) {
     var angle = Math.acos((b + c - a) / (2 * Math.sqrt(b) * Math.sqrt(c))) * 180 / Math.PI;
     enemy1.angle = -angle;
     enemy1.hVAngle = 250;
+  }
+  // ENEMY2
+  if (Math.sqrt((x - enemy2.x)*(x - enemy2.x) + (y - enemy2.y)*(y - enemy2.y)) < 100 && enemy2.id != obj.id) {
+    var a = (obj.x + 32 - enemy2.x)*(obj.x + 32 - enemy2.x) + (obj.y - enemy2.y)*(obj.y - enemy2.y);
+    var b = (obj.x - enemy2.x)*(obj.x - enemy2.x) + (obj.y - enemy2.y)*(obj.y - enemy2.y);
+    var c = 32*32;
+    var angle = Math.acos((b + c - a) / (2 * Math.sqrt(b) * Math.sqrt(c))) * 180 / Math.PI;
+    enemy2.angle = -angle;
+    enemy2.hVAngle = 250;
+  }
+  // ENEMY3
+  if (Math.sqrt((x - enemy3.x)*(x - enemy3.x) + (y - enemy3.y)*(y - enemy3.y)) < 100 && enemy3.id != obj.id) {
+    var a = (obj.x + 32 - enemy3.x)*(obj.x + 32 - enemy3.x) + (obj.y - enemy3.y)*(obj.y - enemy3.y);
+    var b = (obj.x - enemy3.x)*(obj.x - enemy3.x) + (obj.y - enemy3.y)*(obj.y - enemy3.y);
+    var c = 32*32;
+    var angle = Math.acos((b + c - a) / (2 * Math.sqrt(b) * Math.sqrt(c))) * 180 / Math.PI;
+    enemy3.angle = -angle;
+    enemy3.hVAngle = 250;
   }
   // HERO
   if (Math.sqrt((x - hero.x)*(x - hero.x) + (y - hero.y)*(y - hero.y)) < 100 && hero.id != obj.id) {
@@ -561,19 +777,207 @@ function makeParts(obj, p1, p2, p3) {
 
 }
 
-function doIA(obj, type) {
-  switch (type) {
-    case "sniper":
-      obj.IA1 = setInterval(function () {
-        // DISTANCE CALCUL
-        var distance = Math.sqrt((hero.x - enemy1.x)*(hero.x - enemy1.x) + (hero.y - enemy1.y)*(hero.y - enemy1.y));
-        if (distance < 256) {
+function doIA(obj) {
+  if (obj.part1 == 0 || obj.part1 == 1) {
+
+    obj.IA1 = setInterval(function () {
+
+      // MOVE
+      var rotTime = Math.random() * 64;
+      var rotDir = Math.floor(Math.random() * 2);
+      var rotInt = setInterval(function () {
+        if (rotDir == 0) {
+          if (obj.body.angularVelocity > -rotCap)
+            obj.body.angularVelocity -= rotStep;
+        } else if (rotDir == 1) {
+          if (obj.body.angularVelocity < rotCap)
+            obj.body.angularVelocity += rotStep;
+        }
+      }, 17);
+      setTimeout(function () {
+        clearInterval(rotInt);
+      }, 17 * rotTime);
+
+      setTimeout(function () {
+        var moveInt = setInterval(function () {
+          if (obj.hVAngle < obj.capA)
+            obj.hVAngle += 5;
+        }, 17);
+        setTimeout(function () {
+          clearInterval(moveInt);
+        }, 17*64);
+      }, 500);
+
+      // DISTANCE CALCUL
+      var distance = Math.sqrt((hero.x - obj.x)*(hero.x - obj.x) + (hero.y - obj.y)*(hero.y - obj.y));
+
+      if (distance < 256) {
+        if (obj.part1 == 0 && obj.canBite) {
           bite(obj);
         }
-        //
-      }, 2000);
-      break;
-    default:
+      }
+      //
+    }, 1000);
 
+  } else {
+
+    obj.IA1 = setInterval(function () {
+
+      // MOVE
+
+      // DISTANCE CALCUL
+      var distance1 = Math.sqrt((hero.x - obj.x)*(hero.x - obj.x) + (hero.y - obj.y)*(hero.y - obj.y));
+      if (obj.id == "enemy1") {
+        var distance2 = Math.sqrt((enemy2.x - obj.x)*(enemy2.x - obj.x) + (enemy2.y - obj.y)*(enemy2.y - obj.y));
+        var distance3 = Math.sqrt((enemy3.x - obj.x)*(enemy3.x - obj.x) + (enemy3.y - obj.y)*(enemy3.y - obj.y));
+      } else if (obj.id == "enemy2") {
+        var distance2 = Math.sqrt((enemy1.x - obj.x)*(enemy1.x - obj.x) + (enemy1.y - obj.y)*(enemy1.y - obj.y));
+        var distance3 = Math.sqrt((enemy3.x - obj.x)*(enemy3.x - obj.x) + (enemy3.y - obj.y)*(enemy3.y - obj.y));
+      } else {
+        var distance2 = Math.sqrt((enemy1.x - obj.x)*(enemy1.x - obj.x) + (enemy1.y - obj.y)*(enemy1.y - obj.y));
+        var distance3 = Math.sqrt((enemy2.x - obj.x)*(enemy2.x - obj.x) + (enemy2.y - obj.y)*(enemy2.y - obj.y));
+      }
+      // CIBLE
+      if ((distance1 > distance2 && distance2 > distance3) || (distance1 > distance3 && distance3 > distance2)) {
+        var distance = distance1;
+      } else if ((distance2 > distance1 && distance1 > distance3) || (distance2 > distance3 && distance3 > distance1)) {
+        var distance = distance2;
+      } else {
+        var distance = distance3;
+      }
+
+      if (distance > 550) {
+        // REALLY DISTANT
+        // TRY TO GET CLOSER
+
+        clearInterval(moveInt);
+        clearInterval(rotateInt);
+
+        // INTERVAL TO MOVE
+        var moveInt = setInterval(function () {
+          if (obj.hVAngle < obj.capA)
+            obj.hVAngle += 5;
+        }, 17);
+
+        // INTERVAL TO ROTATE
+        var rotateInt = setInterval(function () {
+          var angle = getCloserAngle(obj);
+          if (angle - obj.angle < 25) {
+            clearInterval(rotateInt);
+          }
+          if (angle < obj.angle && angle - obj.angle < 180) {
+            if (obj.body.angularVelocity > -rotCap)
+              obj.body.angularVelocity -= rotStep;
+          } else {
+            if (obj.body.angularVelocity < rotCap)
+              obj.body.angularVelocity += rotStep;
+          }
+        }, 17);
+
+      } else if (distance > 400) {
+        // DISTANT
+        // AIM AND SHOOT
+
+        clearInterval(moveInt);
+        clearInterval(rotateInt);
+
+        // INTERVAL TO ROTATE
+        var rotateInt = setInterval(function () {
+          var angle = getCloserAngle(obj);
+
+          if (Math.abs(angle - obj.angle) < 17.5) {
+            clearInterval(rotateInt);
+          }
+          if (angle < obj.angle && angle - obj.angle < 180) {
+            if (obj.body.angularVelocity > -rotCap)
+              obj.body.angularVelocity -= rotStep;
+          } else {
+            if (obj.body.angularVelocity < rotCap)
+              obj.body.angularVelocity += rotStep;
+          }
+        }, 17);
+
+        if (obj.part1 == 3 && obj.canBomb) {
+          bomb(obj);
+        } else if (obj.part1 == 2 && obj.canSpit) {
+          spit(obj);
+        }
+
+      } else {
+        // CLOSE
+        // TRY TO ESCAPE
+
+        clearInterval(moveInt);
+        clearInterval(rotateInt);
+
+        var moveInt = setInterval(function () {
+          if (obj.hVAngle > obj.capB)
+            obj.hVAngle -= 5;
+        }, 17);
+
+        if (Math.floor(Math.random() * 6) == 0) {
+          if (obj.part1 == 3 && obj.canBomb) {
+            bomb(obj);
+          } else if (obj.part1 == 2 && obj.canSpit) {
+            spit(obj);
+          }
+        }
+
+        // INTERVAL TO ROTATE
+        var rotateInt = setInterval(function () {
+          var angle = getCloserAngle(obj);
+
+          if (Math.abs(angle - obj.angle) < 15) {
+            clearInterval(rotateInt);
+          }
+
+          if (angle < obj.angle && angle - obj.angle < 180) {
+            if (obj.body.angularVelocity > -rotCap)
+              obj.body.angularVelocity -= rotStep;
+          } else {
+            if (obj.body.angularVelocity < rotCap)
+              obj.body.angularVelocity += rotStep;
+          }
+
+        }, 17);
+      }
+
+      //
+    }, 960);
   }
+}
+
+function getCloserAngle(obj) {
+  var distance1 = Math.sqrt((hero.x - obj.x)*(hero.x - obj.x) + (hero.y - obj.y)*(hero.y - obj.y));
+  if (obj.id == "enemy1") {
+    var distance2 = Math.sqrt((enemy2.x - obj.x)*(enemy2.x - obj.x) + (enemy2.y - obj.y)*(enemy2.y - obj.y));
+    var distance3 = Math.sqrt((enemy3.x - obj.x)*(enemy3.x - obj.x) + (enemy3.y - obj.y)*(enemy3.y - obj.y));
+  } else if (obj.id == "enemy2") {
+    var distance2 = Math.sqrt((enemy1.x - obj.x)*(enemy1.x - obj.x) + (enemy1.y - obj.y)*(enemy1.y - obj.y));
+    var distance3 = Math.sqrt((enemy3.x - obj.x)*(enemy3.x - obj.x) + (enemy3.y - obj.y)*(enemy3.y - obj.y));
+  } else {
+    var distance2 = Math.sqrt((enemy1.x - obj.x)*(enemy1.x - obj.x) + (enemy1.y - obj.y)*(enemy1.y - obj.y));
+    var distance3 = Math.sqrt((enemy2.x - obj.x)*(enemy2.x - obj.x) + (enemy2.y - obj.y)*(enemy2.y - obj.y));
+  }
+  // CIBLE
+  if ((distance1 > distance2 && distance2 > distance3) || (distance1 > distance3 && distance3 > distance2)) {
+    var angle = game.physics.arcade.angleBetween(obj, hero) * 60;
+  } else if ((distance2 > distance1 && distance1 > distance3) || (distance2 > distance3 && distance3 > distance1)) {
+    if (obj.id == "enemy1") {
+      var angle = game.physics.arcade.angleBetween(obj, enemy2) * 60;
+    } else if (obj.id == "enemy2") {
+      var angle = game.physics.arcade.angleBetween(obj, enemy1) * 60;
+    } else {
+      var angle = game.physics.arcade.angleBetween(obj, enemy1) * 60;
+    }
+  } else {
+    if (obj.id == "enemy1") {
+      var angle = game.physics.arcade.angleBetween(obj, enemy3) * 60;
+    } else if (obj.id == "enemy2") {
+      var angle = game.physics.arcade.angleBetween(obj, enemy3) * 60;
+    } else {
+      var angle = game.physics.arcade.angleBetween(obj, enemy2) * 60;
+    }
+  }
+  return angle;
 }

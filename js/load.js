@@ -41,22 +41,14 @@ var loadState = {
     game.load.image("mouth2_2", "assets/mouth_horn_shell.png");
     game.load.image("mouth2_3", "assets/mouth_horn_thorny.png");
     game.load.image("mouth2_4", "assets/mouth_horn_shocker.png");
-    // game.load.spritesheet("mouth3_1", "assets/mouth_spit_skin.png", 32, 32);
-    // game.load.spritesheet("mouth3_2", "assets/mouth_spit_shell.png", 32, 32);
-    // game.load.spritesheet("mouth3_3", "assets/mouth_spit_thorny.png", 32, 32);
-    // game.load.spritesheet("mouth3_4", "assets/mouth_spit_shocker.png", 32, 32);
-    game.load.spritesheet("mouth3_1", "assets/mouth_spit.png", 32, 32);
-    game.load.spritesheet("mouth3_2", "assets/mouth_spit.png", 32, 32);
-    game.load.spritesheet("mouth3_3", "assets/mouth_spit.png", 32, 32);
-    game.load.spritesheet("mouth3_4", "assets/mouth_spit.png", 32, 32);
-    // game.load.spritesheet("mouth4_1", "assets/mouth_bomb_skin.png", 32, 32);
-    // game.load.spritesheet("mouth4_2", "assets/mouth_bomb_shell.png", 32, 32);
-    // game.load.spritesheet("mouth4_3", "assets/mouth_bomb_thorny.png", 32, 32);
-    // game.load.spritesheet("mouth4_4", "assets/mouth_bomb_shocker.png", 32, 32);
-    game.load.spritesheet("mouth4_1", "assets/mouth_bomb.png", 32, 32);
-    game.load.spritesheet("mouth4_2", "assets/mouth_bomb.png", 32, 32);
-    game.load.spritesheet("mouth4_3", "assets/mouth_bomb.png", 32, 32);
-    game.load.spritesheet("mouth4_4", "assets/mouth_bomb.png", 32, 32);
+    game.load.spritesheet("mouth3_1", "assets/mouth_spitter_skin.png", 32, 32);
+    game.load.spritesheet("mouth3_2", "assets/mouth_spitter_shell.png", 32, 32);
+    game.load.spritesheet("mouth3_3", "assets/mouth_spitter_thorny.png", 32, 32);
+    game.load.spritesheet("mouth3_4", "assets/mouth_spitter_shocker.png", 32, 32);
+    game.load.spritesheet("mouth4_1", "assets/mouth_bomb_skin.png", 32, 32);
+    game.load.spritesheet("mouth4_2", "assets/mouth_bomb_shell.png", 32, 32);
+    game.load.spritesheet("mouth4_3", "assets/mouth_bomb_thorny.png", 32, 32);
+    game.load.spritesheet("mouth4_4", "assets/mouth_bomb_shocker.png", 32, 32);
 
     // BODY
     game.load.image("body1", "assets/body_skin.png");
