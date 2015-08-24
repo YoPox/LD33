@@ -18,7 +18,7 @@ var actName = Math.floor(Math.random() * (names.length));
 
 var pieces1 = ["jaw", "horn", "spit", "bomb"];
 var pieces2 = ["skin", "shell", "thorny", "shocker"];
-var pieces3 = ["LEGS", "spider", "ANTILOPE", "FROG", "slime"];
+var pieces3 = ["LEGS", "spider", "ANTILOPE", "FROG"];
 
 var descs1 = ["Quench your thirst for blood\nby bitting your enemies.",
 "Impale other monsters\nwith this harp horn.",
@@ -31,8 +31,7 @@ var descs2 = ["Flexible fabulous light\nand shiny skin.",
 var descs3 = ["You can walk with those.\nHow cool is that ?",
 "I hate spider.\nBut they can move back faster...",
 "Sprint away you coward.\nI'll catch you anyway.",
-"Dash forward to escape or attack.",
-"Let a sticky disgusting trail\nbehind you to slow other monsters."];
+"Dash forward to escape or attack."];
 var piece1 = Math.floor(Math.random() * (pieces1.length));
 var piece2 = Math.floor(Math.random() * (pieces2.length));
 var piece3 = Math.floor(Math.random() * (pieces3.length));
@@ -42,7 +41,7 @@ var piece1_sprite = [['mouth1_1', 'mouth1_2', 'mouth1_3', 'mouth1_4'],
                     ['mouth3_1', 'mouth3_2', 'mouth3_3', 'mouth3_4'],
                     ['mouth4_1', 'mouth4_2', 'mouth4_3', 'mouth4_4']];
 var piece2_sprite = ['body1', 'body2', 'body3', 'body4'];
-var piece3_sprite = ['legs1', 'legs2', 'legs3', 'legs4', 'legs5'];
+var piece3_sprite = ['legs1', 'legs2', 'legs3', 'legs4'];
 
 var chooseState = {
 
@@ -53,14 +52,14 @@ var chooseState = {
     // ArtRemix.play(buffer);
 
     // ARRAYS
-    arr1 = game.add.sprite(160, 180, 'arrow');
+    arr1 = game.add.sprite(160, 308, 'arrow');
     arr1.anchor.set(0.5, 0.5);
     arr1.scale.set(2);
     arr1.smoothed = false;
     arr1.inputEnabled = true;
     arr1.events.onInputDown.add(function() {changeParts(0,0);}, this);
 
-    arr1_ = game.add.sprite(480, 180, 'arrow');
+    arr1_ = game.add.sprite(480, 308, 'arrow');
     arr1_.anchor.set(0.5, 0.5);
     arr1_.scale.set(2);
     arr1_.smoothed = false;
@@ -68,14 +67,14 @@ var chooseState = {
     arr1_.inputEnabled = true;
     arr1_.events.onInputDown.add(function() {changeParts(0,1);}, this);
 
-    arr2 = game.add.sprite(160, 360, 'arrow');
+    arr2 = game.add.sprite(160, 424, 'arrow');
     arr2.anchor.set(0.5, 0.5);
     arr2.scale.set(2);
     arr2.smoothed = false;
     arr2.inputEnabled = true;
     arr2.events.onInputDown.add(function() {changeParts(1,0);}, this);
 
-    arr2_ = game.add.sprite(480, 360, 'arrow');
+    arr2_ = game.add.sprite(480, 424, 'arrow');
     arr2_.anchor.set(0.5, 0.5);
     arr2_.scale.set(2);
     arr2_.smoothed = false;
@@ -101,21 +100,24 @@ var chooseState = {
     // PIECES
     // TODO: remove text and replace with assets
 
-    p1 = game.add.sprite(320, 232, piece1_sprite[piece1][piece2]);
-    p1.anchor.set(0, 0.5);
+    p1 = game.add.sprite(320, 320, piece1_sprite[piece1][piece2]);
     p1.scale.set(4);
+    p1.anchor.set(0, 0.5);
     p1.smoothed = false;
     p1.angle = -90;
-    p2 = game.add.sprite(320, 360, piece2_sprite[piece2]);
-    p2.anchor.set(0.5, 0.5);
+    p2 = game.add.sprite(320, 448, piece2_sprite[piece2]);
     p2.scale.set(4);
+    p2.anchor.set(0.5, 0.5);
     p2.smoothed = false;
     p2.angle = -90;
-    p3 = game.add.sprite(320, 488, piece3_sprite[piece3]);
-    p3.anchor.set(1, 0.5);
+    p3 = game.add.sprite(320, 448, piece3_sprite[piece3]);
     p3.scale.set(4);
+    p3.anchor.set(0.5, 0.5);
     p3.smoothed = false;
     p3.angle = -90;
+    p3.animations.add("walk", [0, 1, 2, 3]);
+    p3.animations.play("walk", 6, true);
+    p2.bringToTop();
 
 
     // CLEAR RECTANGLE
@@ -261,6 +263,7 @@ function updateText() {
   p1.loadTexture(piece1_sprite[piece1][piece2]);
   p2.loadTexture(piece2_sprite[piece2]);
   p3.loadTexture(piece3_sprite[piece3]);
+  p3.animations.play("walk", 6, true);
 }
 
 function gameStart() {

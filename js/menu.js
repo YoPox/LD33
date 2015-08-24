@@ -29,7 +29,7 @@ var menuState = {
     title.alpha = 0;
     // ANIMATION
     game.add.tween(title).to( { alpha: 1 }, 2000, Phaser.Easing.Exponential.InOut, true);
-    game.add.tween(title).to( { y: game.height / 4 }, 1500, Phaser.Easing.Exponential.InOut, true);
+    game.add.tween(title).to( { y: game.height / 4 + 16 }, 1500, Phaser.Easing.Exponential.InOut, true);
     // REGULAR MOVE
     moveInt = setInterval(function () {
       game.add.tween(title).to( { y: title.y + 4 }, 1500, Phaser.Easing.Exponential.InOut, true);
@@ -203,7 +203,7 @@ function select() {
 }
 
 function twitt() {
-  var msg = encodeURIComponent('I played ??? by @ArtRemix38, @YoPoxDEV and @Ixous94 ! #LD33');
+  var msg = encodeURIComponent('I played "Be The MASTER" by @ArtRemix38, @Ixous94, @olgret38 and @YoPoxDEV ! #LD33');
   var url = encodeURIComponent('http://www.eLLectron.com/games/LD33');
   var link = 'http://twitter.com/intent/tweet?text=' + msg + '&url=' + url;
   window.open(link, '_blank', 'location=yes,height=256,width=512,scrollbars=yes,status=yes');

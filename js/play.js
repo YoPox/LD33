@@ -4,6 +4,8 @@ var enemy1;
 var enemy2;
 var enemy3;
 
+var bg;
+
 // STUFF
 var rotStep = 25;
 var rotCap = 200
@@ -25,32 +27,52 @@ var playState = {
     // var buffer = game.cache.getBinary('cbt_xm');
     // ArtRemix.play(buffer);
 
+    bg = game.add.sprite(0, 0, "sand");
+    bg.scale.set(4);
+    bg.smoothed = false;
+
     var heroPosition = Math.floor(Math.random() * 4);
 
     switch (heroPosition) {
       case 0:
         hero = game.add.sprite(128, 128, 'hero');
+        hero.angle = 45;
         enemy1 = game.add.sprite(1152, 128, 'hero');
+        enemy1.angle = 135;
         enemy2 = game.add.sprite(128, 592, 'hero');
+        enemy2.angle = -45;
         enemy3 = game.add.sprite(1152, 592, 'hero');
+        enemy3.angle = -135;
         break;
       case 1:
         hero = game.add.sprite(1152, 128, 'hero');
+        hero.angle = 135;
         enemy1 = game.add.sprite(128, 128, 'hero');
+        enemy1.angle = 45;
         enemy2 = game.add.sprite(128, 592, 'hero');
+        enemy2.angle = -45;
         enemy3 = game.add.sprite(1152, 592, 'hero');
+        enemy3.angle = -135;
         break;
       case 2:
         hero = game.add.sprite(128, 592, 'hero');
+        hero.angle = -45;
         enemy1 = game.add.sprite(1152, 128, 'hero');
+        enemy1.angle = 135;
         enemy2 = game.add.sprite(128, 128, 'hero');
+        enemy2.angle = 45;
         enemy3 = game.add.sprite(1152, 592, 'hero');
+        enemy3.angle = -135;
         break;
       case 3:
         hero = game.add.sprite(1152, 592, 'hero');
+        hero.angle = -135;
         enemy1 = game.add.sprite(1152, 128, 'hero');
+        enemy1.angle = 135;
         enemy2 = game.add.sprite(128, 592, 'hero');
-        enemy3 = game.add.sprite(1152, 128, 'hero');
+        enemy2.angle = -45;
+        enemy3 = game.add.sprite(128, 128, 'hero');
+        enemy3.angle = 45;
         break;
     }
 
@@ -151,6 +173,19 @@ var playState = {
     enemy3.mouth.x = enemy3.x + (32 + (4 / (1 + Math.exp(-0.02 * enemy3.hVAngle)) - 2)) * Math.cos(enemy3.angle * Math.PI / 180);
     enemy3.mouth.y = enemy3.y + (32 + (4 / (1 + Math.exp(-0.02 * enemy3.hVAngle)) - 2)) * Math.sin(enemy3.angle * Math.PI / 180);
 
+    hero.legs.angle = hero.angle;
+    hero.legs.x = hero.x;
+    hero.legs.y = hero.y;
+    enemy1.legs.angle = enemy1.angle;
+    enemy1.legs.x = enemy1.x;
+    enemy1.legs.y = enemy1.y;
+    enemy2.legs.angle = enemy2.angle;
+    enemy2.legs.x = enemy2.x;
+    enemy2.legs.y = enemy2.y;
+    enemy3.legs.angle = enemy3.angle;
+    enemy3.legs.x = enemy3.x;
+    enemy3.legs.y = enemy3.y;
+
     // COLLISIONS
     game.physics.arcade.collide(hero, [enemy1, enemy2, enemy3]);
     game.physics.arcade.collide(enemy1, [hero, enemy2, enemy3]);
@@ -174,9 +209,11 @@ var playState = {
     if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
       if (hero.hVAngle < hero.capA)
         hero.hVAngle += hero.step;
+      hero.legs.animations.play("walk", 6, true);
     } else if (game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
       if (hero.hVAngle > hero.capB)
         hero.hVAngle -= hero.step;
+      hero.legs.animations.play("walk", 6, true);
     }
 
     // HORNS
@@ -314,6 +351,15 @@ var playState = {
     if (enemy3.hVAngle != 0)
       enemy3.hVAngle += removeStep * enemy3.hVAngle / Math.abs(enemy3.hVAngle);
 
+    if (Math.abs(hero.hVAngle) < 15)
+      hero.legs.animations.stop();
+    if (Math.abs(enemy1.hVAngle) < 15)
+      enemy1.legs.animations.stop();
+    if (Math.abs(enemy2.hVAngle) < 15)
+      enemy2.legs.animations.stop();
+    if (Math.abs(enemy3.hVAngle) < 15)
+      enemy3.legs.animations.stop();
+
     if (hero.body.angularVelocity != 0)
       hero.body.angularVelocity -= removeStep2 * hero.body.angularVelocity / Math.abs(hero.body.angularVelocity);
     if (Math.abs(hero.body.angularVelocity) <= Math.abs(removeStep))
@@ -372,7 +418,6 @@ function initCapacities(obj) {
 
   // GENERAL
   obj.anchor.set(0.5, 0.5);
-  obj.angle = 90;
   game.physics.enable(obj, Phaser.Physics.ARCADE);
   obj.body.collideWorldBounds = true;
   obj.life = 100;
@@ -602,11 +647,13 @@ function damage(obj, quantity) {
   obj.invul = setInterval(function() {
     obj.alpha = 1 - obj.alpha;
     obj.mouth.alpha = 1 - obj.mouth.alpha;
+    obj.legs.alpha = 1 - obj.legs.alpha;
   }, 200);
   setTimeout(function() {
     clearInterval(obj.invul);
     obj.alpha = 1;
     obj.mouth.alpha = 1;
+    obj.legs.alpha = 1;
     obj.justT = false;
   }, 1500);
 }
@@ -716,11 +763,11 @@ function makeParts(obj, p1, p2, p3) {
   obj.part3 = p3;
   switch (p3) {
     case 1:
-      obj.capA -= 25;
       obj.capB = -obj.capA;
+      break;
     case 2:
       obj.capA -= 25;
-      obj.capB += 25;
+      obj.capB -= 50;
       break;
     case 3:
       obj.capA -= 25;
@@ -774,52 +821,34 @@ function makeParts(obj, p1, p2, p3) {
       break;
   }
   // LEGS GRAPHICS
-
+  switch (p1) {
+    case 0:
+      obj.legs = game.add.sprite(obj.x, obj.y, piece3_sprite[p3]);
+      obj.legs.anchor.set(0.5);
+      obj.legs.angle = obj.angle;
+      break;
+    case 1:
+      obj.legs = game.add.sprite(obj.x, obj.y, piece3_sprite[p3]);
+      obj.legs.anchor.set(0.5);
+      obj.legs.angle = obj.angle;
+      break;
+    case 2:
+      obj.legs = game.add.sprite(obj.x, obj.y, piece3_sprite[p3]);
+      obj.legs.anchor.set(0.5);
+      obj.legs.angle = obj.angle;
+      break;
+    case 3:
+      obj.legs = game.add.sprite(obj.x, obj.y, piece3_sprite[p3]);
+      obj.legs.anchor.set(0.5);
+      obj.legs.angle = obj.angle;
+      break;
+  }
+  obj.legs.animations.add("walk", [0, 1, 2, 3]);
+  obj.legs.animations.play("walk", 6, false);
+  obj.bringToTop();
 }
 
 function doIA(obj) {
-  if (obj.part1 == 0 || obj.part1 == 1) {
-
-    obj.IA1 = setInterval(function () {
-
-      // MOVE
-      var rotTime = Math.random() * 64;
-      var rotDir = Math.floor(Math.random() * 2);
-      var rotInt = setInterval(function () {
-        if (rotDir == 0) {
-          if (obj.body.angularVelocity > -rotCap)
-            obj.body.angularVelocity -= rotStep;
-        } else if (rotDir == 1) {
-          if (obj.body.angularVelocity < rotCap)
-            obj.body.angularVelocity += rotStep;
-        }
-      }, 17);
-      setTimeout(function () {
-        clearInterval(rotInt);
-      }, 17 * rotTime);
-
-      setTimeout(function () {
-        var moveInt = setInterval(function () {
-          if (obj.hVAngle < obj.capA)
-            obj.hVAngle += 5;
-        }, 17);
-        setTimeout(function () {
-          clearInterval(moveInt);
-        }, 17*64);
-      }, 500);
-
-      // DISTANCE CALCUL
-      var distance = Math.sqrt((hero.x - obj.x)*(hero.x - obj.x) + (hero.y - obj.y)*(hero.y - obj.y));
-
-      if (distance < 256) {
-        if (obj.part1 == 0 && obj.canBite) {
-          bite(obj);
-        }
-      }
-      //
-    }, 1000);
-
-  } else {
 
     obj.IA1 = setInterval(function () {
 
@@ -857,6 +886,7 @@ function doIA(obj) {
         var moveInt = setInterval(function () {
           if (obj.hVAngle < obj.capA)
             obj.hVAngle += 5;
+            obj.legs.animations.play("walk", 6, true);
         }, 17);
 
         // INTERVAL TO ROTATE
@@ -874,12 +904,29 @@ function doIA(obj) {
           }
         }, 17);
 
-      } else if (distance > 400) {
+        if (Math.random() * 3 < 1) {
+          if (obj.part1 == 0 && obj.canBite) {
+            bite(obj);
+          } else if (obj.part1 == 2 && obj.canSpit) {
+            spit(obj);
+          } else if(obj.part1 == 3 && obj.canBomb) {
+            bomb(obj);
+          }
+        }
+
+      } else if (distance > 250) {
         // DISTANT
         // AIM AND SHOOT
 
         clearInterval(moveInt);
         clearInterval(rotateInt);
+
+        // INTERVAL TO MOVE
+        var moveInt = setInterval(function () {
+          if (obj.hVAngle < obj.capA)
+            obj.hVAngle += 1;
+            obj.legs.animations.play("walk", 6, true);
+        }, 17);
 
         // INTERVAL TO ROTATE
         var rotateInt = setInterval(function () {
@@ -897,15 +944,17 @@ function doIA(obj) {
           }
         }, 17);
 
-        if (obj.part1 == 3 && obj.canBomb) {
-          bomb(obj);
+        if (obj.part1 == 0 && obj.canBite) {
+          bite(obj);
         } else if (obj.part1 == 2 && obj.canSpit) {
           spit(obj);
+        } else if(obj.part1 == 3 && obj.canBomb) {
+          bomb(obj);
         }
 
       } else {
         // CLOSE
-        // TRY TO ESCAPE
+        // BITE
 
         clearInterval(moveInt);
         clearInterval(rotateInt);
@@ -913,14 +962,15 @@ function doIA(obj) {
         var moveInt = setInterval(function () {
           if (obj.hVAngle > obj.capB)
             obj.hVAngle -= 5;
+            obj.legs.animations.play("walk", 6, true);
         }, 17);
 
-        if (Math.floor(Math.random() * 6) == 0) {
-          if (obj.part1 == 3 && obj.canBomb) {
-            bomb(obj);
-          } else if (obj.part1 == 2 && obj.canSpit) {
-            spit(obj);
-          }
+        if (obj.part1 == 0 && obj.canBite) {
+          bite(obj);
+        } else if (obj.part1 == 2 && obj.canSpit) {
+          spit(obj);
+        } else if(obj.part1 == 3 && obj.canBomb) {
+          bomb(obj);
         }
 
         // INTERVAL TO ROTATE
@@ -944,7 +994,7 @@ function doIA(obj) {
 
       //
     }, 960);
-  }
+
 }
 
 function getCloserAngle(obj) {
@@ -960,9 +1010,9 @@ function getCloserAngle(obj) {
     var distance3 = Math.sqrt((enemy2.x - obj.x)*(enemy2.x - obj.x) + (enemy2.y - obj.y)*(enemy2.y - obj.y));
   }
   // CIBLE
-  if ((distance1 > distance2 && distance2 > distance3) || (distance1 > distance3 && distance3 > distance2)) {
+  if ((distance1 < distance2 && distance2 < distance3) || (distance1 < distance3 && distance3 < distance2)) {
     var angle = game.physics.arcade.angleBetween(obj, hero) * 60;
-  } else if ((distance2 > distance1 && distance1 > distance3) || (distance2 > distance3 && distance3 > distance1)) {
+  } else if ((distance2 < distance1 && distance1 < distance3) || (distance2 < distance3 && distance3 < distance1)) {
     if (obj.id == "enemy1") {
       var angle = game.physics.arcade.angleBetween(obj, enemy2) * 60;
     } else if (obj.id == "enemy2") {
