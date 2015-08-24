@@ -139,7 +139,7 @@ var playState = {
     try {
       if (hero.hasBomb) {
         game.physics.arcade.velocityFromAngle(hero.bomb.angle, hero.bomb.speed, hero.bomb.body.velocity);
-        hero.bomb.speed -= 2;
+        hero.bomb.speed -= 1.5;
         if (hero.bomb.speed < 0) {
           hero.bomb.speed = 0;
         }
