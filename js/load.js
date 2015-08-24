@@ -30,6 +30,7 @@ var loadState = {
     game.load.image("part3", "assets/redPart_small.png");
     game.load.image("part4", "assets/shockerPart.png");
     game.load.image("sand", "assets/sand.png");
+    game.load.spritesheet("countdown", "assets/countdown.png", 64, 64);
     game.load.spritesheet("spit", "assets/spit.png", 32, 32);
     game.load.spritesheet("bomb", "assets/bomb.png", 32, 32);
 
@@ -61,7 +62,7 @@ var loadState = {
     game.load.spritesheet("legs1", "assets/leg_leg.png", 64, 64);
     game.load.spritesheet("legs2", "assets/leg_spider.png", 64, 64);
     game.load.spritesheet("legs3", "assets/leg_spider.png", 64, 64);
-    game.load.spritesheet("legs4", "assets/leg_spider.png", 64, 64);
+    game.load.spritesheet("legs4", "assets/leg_frog.png", 64, 64);
 
     // FONT
     game.load.bitmapFont('Munro', 'assets/font/Munro.png', 'assets/font/Munro.fnt');
