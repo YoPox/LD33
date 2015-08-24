@@ -14,11 +14,12 @@ var rotStep = 25;
 var rotCap = 200
 var removeStep2 = 9;
 var removeStep = -3;
-var m, space;
+var m, space, ctrl;
 var spitSpeed = 400;
 var jawDamage = 0;
 var spitDamage = 0;
 var bombDamage = 0;
+var bombAniSpeed = 100;
 
 
 var playState = {
@@ -26,52 +27,19 @@ var playState = {
   create: function() {
 
     // MUSIC PLAYBACK
-    // var buffer = game.cache.getBinary('cbt_xm');
-    // ArtRemix.play(buffer);
+    var buffer = game.cache.getBinary('cbt_xm');
+    ArtRemix.play(buffer);
 
     // HERO
     hero = game.add.sprite(640, 360, 'hero');
-    hero.anchor.set(0.5, 0.5);
-    hero.angle = 90;
-    game.physics.enable(hero, Phaser.Physics.ARCADE);
-    hero.body.collideWorldBounds = true;
-    hero.life = 100;
-    hero.justT = false;
-    hero.emitter = game.add.emitter(hero.x, hero.y, 50);
-    hero.emitter.makeParticles('part3');
-    hero.emitter.gravity = 0;
-    hero.emitter.minParticleSpeed.setTo(-74, -74);
-    hero.emitter.maxParticleSpeed.setTo(74, 74);
-    // BITE EFFECT
-    hero.biteEffect = game.add.sprite(640, 360, 'effect');
-    game.physics.enable(hero.biteEffect, Phaser.Physics.ARCADE);
-    hero.biteEffect.scale.set(2);
-    hero.biteEffect.smoothed = false;
-    hero.biteEffect.anchor.set(0.5, 3);
-    hero.biteEffect.visible = false;
-    // SPIT
-    hero.canSpit = true;
-    hero.spits = game.add.group();
-    // BOMB
-    hero.canBomb = true;
-    hero.hasBomb = false;
+    hero.id = "hero";
+    initCapacities(hero);
 
     // ENEMY1
     enemy1 = game.add.sprite(Math.floor(Math.random() * 500), Math.floor(Math.random() * 650), 'hero');
+    enemy1.id = "enemy1";
     enemy1.tint = "0x888888";
-    enemy1.anchor.set(0.5, 0.5);
-    enemy1.angle = 90;
-    game.physics.enable(enemy1, Phaser.Physics.ARCADE);
-    enemy1.body.collideWorldBounds = true;
-    enemy1.life = 100;
-    enemy1.justT = false;
-    enemy1.emitter = game.add.emitter(enemy1.x, enemy1.y, 50);
-    enemy1.emitter.makeParticles('part3');
-    enemy1.emitter.gravity = 0;
-    enemy1.emitter.minParticleSpeed.setTo(-74, -74);
-    enemy1.emitter.maxParticleSpeed.setTo(74, 74);
-
-
+    initCapacities(enemy1);
 
     // KEYBOARD
     m = game.input.keyboard.addKey(Phaser.Keyboard.M);
@@ -94,6 +62,17 @@ var playState = {
       }
 
     }, this);
+    ctrl = game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
+    ctrl.onDown.add(function() {
+      switch (piece2) {
+        case 4:
+          if (hero.canShock)
+            shocker(hero);
+          break;
+      }
+
+    }, this);
+
 
     // APPEAR EFFECT
     game.add.tween(game.world).to( { alpha: 1 }, 1500, Phaser.Easing.Exponential.InOut, true);
@@ -139,7 +118,7 @@ var playState = {
     try {
       if (hero.hasBomb) {
         game.physics.arcade.velocityFromAngle(hero.bomb.angle, hero.bomb.speed, hero.bomb.body.velocity);
-        hero.bomb.speed -= 1.5;
+        hero.bomb.speed -= 1;
         if (hero.bomb.speed < 0) {
           hero.bomb.speed = 0;
         }
@@ -164,6 +143,12 @@ var playState = {
   		p.alpha = p.lifespan / hero.emitter.lifespan;
   	});
     enemy1.emitter.forEachAlive(function(p){
+  		p.alpha = p.lifespan / enemy1.emitter.lifespan;
+  	});
+    hero.shocker.forEachAlive(function(p){
+  		p.alpha = p.lifespan / hero.emitter.lifespan;
+  	});
+    enemy1.shocker.forEachAlive(function(p){
   		p.alpha = p.lifespan / enemy1.emitter.lifespan;
   	});
 
@@ -199,6 +184,41 @@ function bite(obj) {
 
     }
   }
+}
+
+function initCapacities(obj) {
+  // GENERAL
+  obj.anchor.set(0.5, 0.5);
+  obj.angle = 90;
+  game.physics.enable(obj, Phaser.Physics.ARCADE);
+  obj.body.collideWorldBounds = true;
+  obj.life = 100;
+  obj.justT = false;
+  obj.emitter = game.add.emitter(obj.x, obj.y, 50);
+  obj.emitter.makeParticles('part3');
+  obj.emitter.gravity = 0;
+  obj.emitter.minParticleSpeed.setTo(-74, -74);
+  obj.emitter.maxParticleSpeed.setTo(74, 74);
+  // BITE EFFECT
+  obj.biteEffect = game.add.sprite(obj.x, obj.y, 'effect');
+  game.physics.enable(obj.biteEffect, Phaser.Physics.ARCADE);
+  obj.biteEffect.scale.set(2);
+  obj.biteEffect.smoothed = false;
+  obj.biteEffect.anchor.set(0.5, 3);
+  obj.biteEffect.visible = false;
+  // SPIT
+  obj.canSpit = true;
+  obj.spits = game.add.group();
+  // BOMB
+  obj.canBomb = true;
+  obj.hasBomb = false;
+  // SHOCKER
+  obj.canShock = true;
+  obj.shocker = game.add.emitter(obj.x, obj.y, 50);
+  obj.shocker.makeParticles('part4');
+  obj.shocker.gravity = 0;
+  obj.shocker.minParticleSpeed.setTo(-100, -100);
+  obj.shocker.maxParticleSpeed.setTo(100, 100);
 }
 
 function spit(obj) {
@@ -241,31 +261,38 @@ function bomb(obj) {
   obj.bomb.anchor.setTo(0.5, 0.5);
   game.physics.enable(obj.bomb, Phaser.Physics.ARCADE);
   obj.bomb.angle = obj.angle;
-  game.add.tween(obj.bomb).to( { width: 48 }, 3000, Phaser.Easing.Exponential.OutIn, true);
-  game.add.tween(obj.bomb).to( { height: 48 }, 3000, Phaser.Easing.Exponential.OutIn, true);
+  obj.bomb.smoothed = false;
+  game.add.tween(obj.bomb).to( { width: 48 }, 2800, Phaser.Easing.Exponential.OutIn, true);
+  game.add.tween(obj.bomb).to( { height: 48 }, 2800, Phaser.Easing.Exponential.OutIn, true);
   obj.bomb.intSpeed = 300;
   obj.bomb.speed = 200;
   obj.bomb.stop = false;
+  obj.bomb.body.collideWorldBounds = true;
+  obj.bomb.animations.add('explode', [0, 1, 2, 3, 4]);
+  // obj.bomb.animations.add
   setTimeout(function () {
     bombCallback(obj.bomb);
   }, 300);
   setTimeout(function () {
-    obj.hasBomb = false;
-    obj.bomb.stop = true;
-    clearInterval(obj.bomb.before);
-    obj.bomb.destroy();
-    bombExplode(obj.bomb.x, obj.bomb.y);
-  }, 3000);
+    obj.bomb.animations.play('explode', bombAniSpeed, false);
+    setTimeout(function () {
+      obj.hasBomb = false;
+      obj.bomb.stop = true;
+      clearInterval(obj.bomb.before);
+      obj.bomb.destroy();
+      bombExplode(obj.bomb.x, obj.bomb.y);
+    }, 200);
+  }, 2800);
 }
 
 function bombExplode(x, y) {
   if (!enemy1.justT) {
-    if (Math.sqrt((x - enemy1.x)*(x - enemy1.x) + (y - enemy1.y)*(y - enemy1.y)) < 90) {
+    if (Math.sqrt((x - enemy1.x)*(x - enemy1.x) + (y - enemy1.y)*(y - enemy1.y)) < 100) {
       damage(enemy1, bombDamage);
     }
   }
   if (!hero.justT) {
-    if (Math.sqrt((x - hero.x)*(x - hero.x) + (y - hero.y)*(y - hero.y)) < 90) {
+    if (Math.sqrt((x - hero.x)*(x - hero.x) + (y - hero.y)*(y - hero.y)) < 100) {
       damage(hero, bombDamage);
     }
   }
@@ -297,4 +324,33 @@ function damage(obj, quantity) {
     obj.alpha = 1;
     obj.justT = false;
   }, 1500);
+}
+
+function shocker(obj) {
+  obj.canShock = false;
+  setTimeout(function () {
+    obj.canShock = true;
+  }, 10000);
+  obj.shocker.x = obj.x;
+  obj.shocker.y = obj.y;
+  obj.shocker.start(true, 500, null, 50);
+  var x = obj.shocker.x;
+  var y = obj.shocker.y;
+  // ENEMY1
+  if (Math.sqrt((x - enemy1.x)*(x - enemy1.x) + (y - enemy1.y)*(y - enemy1.y)) < 100 && enemy1.id != obj.id) {
+    var a = (obj.x + 32 - enemy1.x)*(obj.x + 32 - enemy1.x) + (obj.y - enemy1.y)*(obj.y - enemy1.y);
+    var b = (obj.x - enemy1.x)*(obj.x - enemy1.x) + (obj.y - enemy1.y)*(obj.y - enemy1.y);
+    var c = 32*32;
+    var angle = Math.acos((b + c - a) / (2 * Math.sqrt(b) * Math.sqrt(c))) * 180 / Math.PI;
+    enemy1.angle = -angle;
+    // enemy1.angleSpeed = 250;
+  }
+  // HERO
+  if (Math.sqrt((x - hero.x)*(x - hero.x) + (y - hero.y)*(y - hero.y)) < 100 && hero.id != obj.id) {
+    var a = (obj.x + 32 - hero.x)*(obj.x + 32 - hero.x) + (obj.y - hero.y)*(obj.y - hero.y);
+    var b = (obj.x - hero.x)*(obj.x - hero.x) + (obj.y - hero.y)*(obj.y - hero.y);
+    var c = 32*32;
+    var angle = Math.acos((b + c - a) / (2 * Math.sqrt(b) * Math.sqrt(c))) * 180 / Math.PI;
+    hero.angle = -angle;
+  }
 }

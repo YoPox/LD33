@@ -29,8 +29,9 @@ var loadState = {
     game.load.image("hero", "assets/dummyHero.png");
     game.load.image("effect", "assets/bite_effect.png");
     game.load.image("part3", "assets/redPart_small.png");
+    game.load.image("part4", "assets/shockerPart.png");
     game.load.image("spit", "assets/spit.png");
-    game.load.image("bomb", "assets/bomb.png");
+    game.load.spritesheet("bomb", "assets/bomb.png", 32, 32);
 
     // FONT
     game.load.bitmapFont('Munro', 'assets/font/Munro.png', 'assets/font/Munro.fnt');
