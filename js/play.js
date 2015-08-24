@@ -232,6 +232,12 @@ function initCapacities(obj) {
   obj.canBomb = true;
   obj.hasBomb = false;
 
+  // HORN
+  obj.hornHitbox = false;
+
+  // THORNY
+  obj.hitSides = false;
+
   // SHOCKER
   obj.canShock = true;
   obj.shocker = game.add.emitter(obj.x, obj.y, 50);
@@ -419,10 +425,51 @@ function sprint(obj) {
 }
 
 function makeParts(obj, p1, p2, p3) {
+  // MOUTH
   obj.part1 = p1;
+  if (p1 == 1) {
+    obj.hornHitbox = true;
+  }
+
+  // BODY
   obj.part2 = p2;
+  switch (p2) {
+    case 0:
+      obj.life = 150;
+      break;
+    case 1:
+      obj.capA -= 50;
+      obj.capB += 50;
+      obj.life = 250;
+      break;
+    case 2:
+      obj.hitSides = true;
+      break;
+  }
+  // LEGS
   obj.part3 = p3;
+  switch (p3) {
+    case 1:
+      obj.capA -= 25;
+      obj.capB = -obj.capA;
+    case 2:
+      obj.capA -= 25;
+      obj.capB += 25;
+      break;
+    case 3:
+      obj.capA -= 25;
+      obj.capB += 25;
+      break;
+    case 4:
+      obj.capA -= 25;
+      obj.capB += 25;
+      obj.slimeInt = setInterval(function () {
+        // TODO: SPAWN SLIME
+      }, 2000);
+      break;
+  }
   // TODO: GRAPHIC SHIT
+
 }
 
 function doIA(obj, type) {
