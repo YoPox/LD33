@@ -37,13 +37,20 @@ var piece1 = Math.floor(Math.random() * (pieces1.length - 1));
 var piece2 = Math.floor(Math.random() * (pieces2.length - 1));
 var piece3 = Math.floor(Math.random() * (pieces3.length - 1));
 
-var piece1_sprite = ['mouth1', 'mouth2', 'mouth3', 'mouth4'];
+var piece1_sprite = [['mouth1_1', 'mouth1_2', 'mouth1_3', 'mouth1_4'],
+                    ['mouth2_1', 'mouth2_2', 'mouth2_3', 'mouth2_4'],
+                    ['mouth3_1', 'mouth3_2', 'mouth3_3', 'mouth3_4'],
+                    ['mouth4_1', 'mouth4_2', 'mouth4_3', 'mouth4_4']];
 var piece2_sprite = ['body1', 'body2', 'body3', 'body4'];
 var piece3_sprite = ['legs1', 'legs2', 'legs3', 'legs4', 'legs5'];
 
 var chooseState = {
 
   create: function() {
+
+    // MUSIC PLAYBACK
+    var buffer = game.cache.getBinary('selec_xm');
+    ArtRemix.play(buffer);
 
     // ARRAYS
     arr1 = game.add.sprite(160, 180, 'arrow');
@@ -93,7 +100,8 @@ var chooseState = {
 
     // PIECES
     // TODO: remove text and replace with assets
-    p1 = game.add.sprite(320, 232, piece1_sprite[piece1]);
+
+    p1 = game.add.sprite(320, 232, piece1_sprite[piece1][piece2]);
     p1.anchor.set(0, 0.5);
     p1.scale.set(4);
     p1.smoothed = false;
@@ -250,7 +258,7 @@ function updateText() {
   desc2.text = descs2[piece2];
   desc3.text = descs3[piece3];
   monsterName.text = "Name : " + names[actName];
-  p1.loadTexture(piece1_sprite[piece1]);
+  p1.loadTexture(piece1_sprite[piece1][piece2]);
   p2.loadTexture(piece2_sprite[piece2]);
   p3.loadTexture(piece3_sprite[piece3]);
 }

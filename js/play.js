@@ -1,5 +1,5 @@
 // SPRITES
-var biteEffect;
+var dummy;
 
 // MONSTERS
 var hero;
@@ -15,12 +15,15 @@ var spitSpeed = 400;
 var jawDamage = 0;
 var spitDamage = 0;
 var bombDamage = 0;
+var hornDamage = 0;
 var bombAniSpeed = 100;
-
 
 var playState = {
 
   create: function() {
+
+    dummy = game.add.sprite(0, 0, 'LOL');
+    dummy.anchor.set(0.5, 0.5);
 
     // MUSIC PLAYBACK
     var buffer = game.cache.getBinary('cbt_xm');
@@ -34,7 +37,7 @@ var playState = {
 
     // ENEMY1
     enemy1 = game.add.sprite(Math.floor(Math.random() * 500), Math.floor(Math.random() * 650), 'hero');
-    makeParts(enemy1, 0, 2, 3);
+    makeParts(enemy1, 1, 2, 3);
     enemy1.id = "enemy1";
     initCapacities(enemy1);
     doIA(enemy1, "sniper");
@@ -129,6 +132,28 @@ var playState = {
         hero.hVAngle -= hero.step;
     }
 
+    // HORNS
+    if (hero.hornHitbox) {
+      var hornX = hero.x + 96 * Math.cos(-hero.angle * Math.PI / 180);
+      var hornY = hero.y - 96 * Math.sin(-hero.angle * Math.PI / 180);
+      dummy.x = hornX;
+      dummy.y = hornY;
+      if (!enemy1.justT) {
+        if (hornX < enemy1.x + 32 && hornX > enemy1.x - 32 && hornY < enemy1.y + 32 && hornX > enemy1.y - 32) {
+          damage(enemy1, hornDamage);
+        }
+      }
+    }
+    if (enemy1.hornHitbox) {
+      var hornX = enemy1.x + 96 * Math.cos(-enemy1.angle * Math.PI / 180);
+      var hornY = enemy1.y - 96 * Math.sin(-enemy1.angle * Math.PI / 180);
+      if (!hero.justT) {
+        if (hornX < hero.x + 32 && hornX > hero.x - 32 && hornY < hero.y + 32 && hornX > hero.y - 32) {
+          damage(hero, hornDamage);
+        }
+      }
+    }
+
     // MOVEMENTS
     game.physics.arcade.velocityFromAngle(hero.angle, hero.hVAngle, hero.body.velocity);
     game.physics.arcade.velocityFromAngle(enemy1.angle, enemy1.hVAngle, enemy1.body.velocity);
@@ -177,6 +202,7 @@ var playState = {
   render: function() {
 
     // game.debug.inputInfo(32, 32);
+    game.debug.body(hero);
 
   }
 
@@ -513,22 +539,22 @@ function makeParts(obj, p1, p2, p3) {
   // MOUTH GRAPHICS
   switch (p1) {
     case 0:
-      obj.mouth = game.add.sprite(obj.x, obj.y + 32, 'mouth1');
+      obj.mouth = game.add.sprite(obj.x, obj.y + 32, piece1_sprite[p1][p2]);
       obj.mouth.anchor.set(0, 0.5);
       obj.mouth.angle = obj.angle;
       break;
     case 1:
-      obj.mouth = game.add.sprite(obj.x, obj.y + 32, 'mouth2');
+      obj.mouth = game.add.sprite(obj.x, obj.y + 32, piece1_sprite[p1][p2]);
       obj.mouth.anchor.set(0, 0.5);
       obj.mouth.angle = obj.angle;
       break;
     case 2:
-      obj.mouth = game.add.sprite(obj.x, obj.y + 32, 'mouth3');
+      obj.mouth = game.add.sprite(obj.x, obj.y + 32, piece1_sprite[p1][p2]);
       obj.mouth.anchor.set(0, 0.5);
       obj.mouth.angle = obj.angle;
       break;
     case 3:
-      obj.mouth = game.add.sprite(obj.x, obj.y + 32, 'mouth4');
+      obj.mouth = game.add.sprite(obj.x, obj.y + 32, piece1_sprite[p1][p2]);
       obj.mouth.anchor.set(0, 0.5);
       obj.mouth.angle = obj.angle;
       break;

@@ -27,17 +27,41 @@ var loadState = {
 
     // GAME
     game.load.image("hero", "assets/dummyHero.png");
-    game.load.image("effect", "assets/bite_effect.png");
     game.load.image("part3", "assets/redPart_small.png");
     game.load.image("part4", "assets/shockerPart.png");
     game.load.spritesheet("spit", "assets/spit.png", 32, 32);
     game.load.spritesheet("bomb", "assets/bomb.png", 32, 32);
 
     // MOUTH
-    game.load.spritesheet("mouth1", "assets/mouth_jaw.png", 32, 32);
-    game.load.image("mouth2", "assets/mouth_horn.png");
-    game.load.spritesheet("mouth3", "assets/mouth_spit.png", 32, 32);
-    game.load.spritesheet("mouth4", "assets/mouth_bomb.png", 32, 32);
+    // game.load.spritesheet("mouth1_1", "assets/mouth_jaw_skin.png", 32, 32);
+    // game.load.spritesheet("mouth1_2", "assets/mouth_jaw_shell.png", 32, 32);
+    // game.load.spritesheet("mouth1_3", "assets/mouth_jaw_thorny.png", 32, 32);
+    // game.load.spritesheet("mouth1_4", "assets/mouth_jaw_shocker.png", 32, 32);
+    game.load.spritesheet("mouth1_1", "assets/mouth_jaw.png", 32, 32);
+    game.load.spritesheet("mouth1_2", "assets/mouth_jaw.png", 32, 32);
+    game.load.spritesheet("mouth1_3", "assets/mouth_jaw.png", 32, 32);
+    game.load.spritesheet("mouth1_4", "assets/mouth_jaw.png", 32, 32);
+    game.load.image("mouth2_1", "assets/mouth_horn_skin.png");
+    game.load.image("mouth2_2", "assets/mouth_horn_shell.png");
+    game.load.image("mouth2_3", "assets/mouth_horn_thorny.png");
+    // game.load.image("mouth2_4", "assets/mouth_horn_shocker.png");
+    game.load.image("mouth2_4", "assets/mouth_horn_shell.png");
+    // game.load.spritesheet("mouth3_1", "assets/mouth_spit_skin.png", 32, 32);
+    // game.load.spritesheet("mouth3_2", "assets/mouth_spit_shell.png", 32, 32);
+    // game.load.spritesheet("mouth3_3", "assets/mouth_spit_thorny.png", 32, 32);
+    // game.load.spritesheet("mouth3_4", "assets/mouth_spit_shocker.png", 32, 32);
+    game.load.spritesheet("mouth3_1", "assets/mouth_spit.png", 32, 32);
+    game.load.spritesheet("mouth3_2", "assets/mouth_spit.png", 32, 32);
+    game.load.spritesheet("mouth3_3", "assets/mouth_spit.png", 32, 32);
+    game.load.spritesheet("mouth3_4", "assets/mouth_spit.png", 32, 32);
+    // game.load.spritesheet("mouth4_1", "assets/mouth_bomb_skin.png", 32, 32);
+    // game.load.spritesheet("mouth4_2", "assets/mouth_bomb_shell.png", 32, 32);
+    // game.load.spritesheet("mouth4_3", "assets/mouth_bomb_thorny.png", 32, 32);
+    // game.load.spritesheet("mouth4_4", "assets/mouth_bomb_shocker.png", 32, 32);
+    game.load.spritesheet("mouth4_1", "assets/mouth_bomb.png", 32, 32);
+    game.load.spritesheet("mouth4_2", "assets/mouth_bomb.png", 32, 32);
+    game.load.spritesheet("mouth4_3", "assets/mouth_bomb.png", 32, 32);
+    game.load.spritesheet("mouth4_4", "assets/mouth_bomb.png", 32, 32);
 
     // BODY
     game.load.image("body1", "assets/body_skin.png");
@@ -49,6 +73,7 @@ var loadState = {
 
     // MUSIC
     game.load.binary('title_xm', 'assets/audio/title.xm', binaryLoadCallback, this);
+    game.load.binary('selec_xm', 'assets/audio/selec.xm', binaryLoadCallback, this);
     game.load.binary('cbt_xm', 'assets/audio/cbt.xm', binaryLoadCallback, this);
 
   },
