@@ -41,6 +41,7 @@ var loadState = {
 
     // BODY
     game.load.image("body1", "assets/body_skin.png");
+    game.load.spritesheet("body2", "assets/body_shell.png", 64, 64);
     game.load.image("body3", "assets/body_thorny.png");
 
     // FONT

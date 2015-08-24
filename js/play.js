@@ -34,11 +34,10 @@ var playState = {
 
     // ENEMY1
     enemy1 = game.add.sprite(Math.floor(Math.random() * 500), Math.floor(Math.random() * 650), 'hero');
-    makeParts(enemy1, 2, 2, 3);
+    makeParts(enemy1, 0, 2, 3);
     enemy1.id = "enemy1";
-    enemy1.tint = "0x888888";
     initCapacities(enemy1);
-    // doIA(enemy1, "sniper");
+    doIA(enemy1, "sniper");
 
     // KEYBOARD
     m = game.input.keyboard.addKey(Phaser.Keyboard.M);
@@ -47,7 +46,7 @@ var playState = {
     c.onDown.add(function() {
       switch (hero.part1) {
         case 0:
-          if (!hero.biteEffect.visible)
+          if (hero.canBite)
             bite(hero);
           break;
         case 2:
@@ -96,11 +95,18 @@ var playState = {
     // UPDATE POS VALUES
     hero.body.velocity.x = 0;
     hero.body.velocity.y = 0;
-    hero.emitter.x = hero.biteEffect.x = hero.x;
-    hero.emitter.y = hero.biteEffect.y = hero.y;
+    // EMITTERS
+    hero.emitter.x = hero.x;
+    hero.emitter.y = hero.y;
     enemy1.emitter.x = enemy1.x;
     enemy1.emitter.y = enemy1.y;
-    hero.biteEffect.angle = hero.angle + 90;
+    // MOUTH
+    hero.mouth.angle = hero.angle;
+    hero.mouth.x = hero.x + 32 * Math.cos(hero.angle * Math.PI / 180);
+    hero.mouth.y = hero.y + 32 * Math.sin(hero.angle * Math.PI / 180);
+    enemy1.mouth.angle = enemy1.angle;
+    enemy1.mouth.x = enemy1.x + 32 * Math.cos(enemy1.angle * Math.PI / 180);
+    enemy1.mouth.y = enemy1.y + 32 * Math.sin(enemy1.angle * Math.PI / 180);
 
     // COLLISIONS
     game.physics.arcade.collide(hero, enemy1);
@@ -176,30 +182,6 @@ var playState = {
 
 };
 
-function bite(obj) {
-
-  obj.biteEffect.visible = true;
-  setTimeout(function () {
-    obj.biteEffect.visible = false;
-  }, 250);
-
-  var boundA = [obj.x + 32 * Math.cos((26.535 - obj.angle) * Math.PI / 180), obj.y + 32 * Math.sin((26.535 + obj.angle) * Math.PI / 180)];
-  var boundA_ = [obj.x + 32 * Math.cos((-26.535 - obj.angle) * Math.PI / 180), obj.y + 32 * Math.sin((-26.535 + obj.angle) * Math.PI / 180)];
-  var boundB = [obj.x + 48 * Math.cos((18.435 - obj.angle) * Math.PI / 180), obj.y + 48 * Math.sin((18.435 + obj.angle) * Math.PI / 180)];
-  var boundB_ = [obj.x + 48 * Math.cos((-18.435 - obj.angle) * Math.PI / 180), obj.y + 48 * Math.sin((-18.435 + obj.angle) * Math.PI / 180)];
-
-  if (!enemy1.justT) {
-    if ((boundA[0] < enemy1.x + 32 && boundA[0] > enemy1.x - 32 && boundA[1] < enemy1.y + 32 && boundA[1] > enemy1.y - 32)
-    || (boundA_[0] < enemy1.x + 32 && boundA_[0] > enemy1.x - 32 && boundA_[1] < enemy1.y + 32 && boundA_[1] > enemy1.y - 32)
-    || (boundB[0] < enemy1.x + 32 && boundB[0] > enemy1.x - 32 && boundB[1] < enemy1.y + 32 && boundB[1] > enemy1.y - 32)
-    || (boundB_[0] < enemy1.x + 32 && boundB_[0] > enemy1.x - 32 && boundB_[1] < enemy1.y + 32 && boundB_[1] > enemy1.y - 32)) {
-
-      damage(enemy1, jawDamage);
-
-    }
-  }
-}
-
 function initCapacities(obj) {
 
   // GENERAL
@@ -217,12 +199,7 @@ function initCapacities(obj) {
   obj.hVAngle = 0;
 
   // BITE EFFECT
-  obj.biteEffect = game.add.sprite(obj.x, obj.y, 'effect');
-  game.physics.enable(obj.biteEffect, Phaser.Physics.ARCADE);
-  obj.biteEffect.scale.set(2);
-  obj.biteEffect.smoothed = false;
-  obj.biteEffect.anchor.set(0.5, 3);
-  obj.biteEffect.visible = false;
+  obj.canBite = true;
 
   // SPIT
   obj.canSpit = true;
@@ -256,6 +233,42 @@ function initCapacities(obj) {
   obj.step = 10;
 }
 
+function bite(obj) {
+
+  obj.canBite = false;
+  obj.mouth.frame = 3;
+  setTimeout(function () {
+    obj.mouth.frame = 0;
+    obj.canBite = true;
+  }, 250);
+
+  var boundA = [obj.x + 32 * Math.cos((26.535 - obj.angle) * Math.PI / 180), obj.y + 32 * Math.sin((26.535 + obj.angle) * Math.PI / 180)];
+  var boundA_ = [obj.x + 32 * Math.cos((-26.535 - obj.angle) * Math.PI / 180), obj.y + 32 * Math.sin((-26.535 + obj.angle) * Math.PI / 180)];
+  var boundB = [obj.x + 48 * Math.cos((18.435 - obj.angle) * Math.PI / 180), obj.y + 48 * Math.sin((18.435 + obj.angle) * Math.PI / 180)];
+  var boundB_ = [obj.x + 48 * Math.cos((-18.435 - obj.angle) * Math.PI / 180), obj.y + 48 * Math.sin((-18.435 + obj.angle) * Math.PI / 180)];
+
+  if (!enemy1.justT && obj.id != enemy1.id) {
+    if ((boundA[0] < enemy1.x + 32 && boundA[0] > enemy1.x - 32 && boundA[1] < enemy1.y + 32 && boundA[1] > enemy1.y - 32)
+    || (boundA_[0] < enemy1.x + 32 && boundA_[0] > enemy1.x - 32 && boundA_[1] < enemy1.y + 32 && boundA_[1] > enemy1.y - 32)
+    || (boundB[0] < enemy1.x + 32 && boundB[0] > enemy1.x - 32 && boundB[1] < enemy1.y + 32 && boundB[1] > enemy1.y - 32)
+    || (boundB_[0] < enemy1.x + 32 && boundB_[0] > enemy1.x - 32 && boundB_[1] < enemy1.y + 32 && boundB_[1] > enemy1.y - 32)) {
+
+      damage(enemy1, jawDamage);
+
+    }
+  }
+  if (!hero.justT && obj.id != hero.id) {
+    if ((boundA[0] < hero.x + 32 && boundA[0] > hero.x - 32 && boundA[1] < hero.y + 32 && boundA[1] > hero.y - 32)
+    || (boundA_[0] < hero.x + 32 && boundA_[0] > hero.x - 32 && boundA_[1] < hero.y + 32 && boundA_[1] > hero.y - 32)
+    || (boundB[0] < hero.x + 32 && boundB[0] > hero.x - 32 && boundB[1] < hero.y + 32 && boundB[1] > hero.y - 32)
+    || (boundB_[0] < hero.x + 32 && boundB_[0] > hero.x - 32 && boundB_[1] < hero.y + 32 && boundB_[1] > hero.y - 32)) {
+
+      damage(hero, jawDamage);
+
+    }
+  }
+}
+
 function spit(obj) {
   obj.canSpit = false;
   setTimeout(function () {
@@ -265,12 +278,20 @@ function spit(obj) {
   item.anchor.setTo(0.5, 0.5);
   game.physics.enable(item, Phaser.Physics.ARCADE);
   item.angle = obj.angle;
-  item.scale.set(2);
+  item.smoothed = false;
   item._speed = 400;
+  obj.mouth.frame = 1;
+  setTimeout(function () {
+    obj.mouth.frame = 0;
+  }, 200);
   item.animations.add('a', [0, 1, 2, 3, 4, 5, 6]);
   item.animations.play('a', 25, true);
-  game.add.tween(item).to( { width: 0 }, 1250, Phaser.Easing.Exponential.OutIn, true);
-  game.add.tween(item).to( { height: 0 }, 1250, Phaser.Easing.Exponential.OutIn, true);
+  game.add.tween(item).to( { width: 64 }, 250, Phaser.Easing.Exponential.OutIn, true);
+  game.add.tween(item).to( { height: 64 }, 250, Phaser.Easing.Exponential.OutIn, true);
+  setTimeout(function () {
+    game.add.tween(item).to( { width: 0 }, 1000, Phaser.Easing.Exponential.OutIn, true);
+    game.add.tween(item).to( { height: 0 }, 1000, Phaser.Easing.Exponential.OutIn, true);
+  }, 250);
   setTimeout(function () {
     if (item) item.destroy();
   }, 1250);
@@ -294,7 +315,7 @@ function bomb(obj) {
   setTimeout(function () {
     obj.canBomb = true;
   }, 5000);
-  obj.bomb = game.add.sprite(obj.x + 32 * Math.cos(obj.angle * Math.PI / 180), obj.y + 32 * Math.sin(obj.angle * Math.PI / 180), 'bomb');
+  obj.bomb = game.add.sprite(obj.x + 40 * Math.cos(obj.angle * Math.PI / 180), obj.y + 40 * Math.sin(obj.angle * Math.PI / 180), 'bomb');
   obj.bomb.anchor.setTo(0.5, 0.5);
   game.physics.enable(obj.bomb, Phaser.Physics.ARCADE);
   obj.bomb.angle = obj.angle;
@@ -306,7 +327,10 @@ function bomb(obj) {
   obj.bomb.stop = false;
   obj.bomb.body.collideWorldBounds = true;
   obj.bomb.animations.add('explode', [0, 1, 2, 3, 4]);
-  // obj.bomb.animations.add
+  obj.mouth.frame = 1;
+  setTimeout(function () {
+    obj.mouth.frame = 0;
+  }, 300);
   setTimeout(function () {
     bombCallback(obj.bomb);
   }, 300);
@@ -355,10 +379,12 @@ function damage(obj, quantity) {
   obj.justT = true;
   obj.invul = setInterval(function() {
     obj.alpha = 1 - obj.alpha;
+    obj.mouth.alpha = 1 - obj.mouth.alpha;
   }, 200);
   setTimeout(function() {
     clearInterval(obj.invul);
     obj.alpha = 1;
+    obj.mouth.alpha = 1;
     obj.justT = false;
   }, 1500);
 }
@@ -468,14 +494,15 @@ function makeParts(obj, p1, p2, p3) {
       }, 2000);
       break;
   }
-  // TODO: GRAPHIC SHIT
+
+  // BODY GRAPHICS
   switch (p2) {
-    // case 0:
-    //   obj.loadTexture('body1');
-    //   break;
-    // case 1:
-    //   obj.loadTexture('body2');
-    //   break;
+    case 0:
+      obj.loadTexture('body1');
+      break;
+    case 1:
+      obj.loadTexture('body2');
+      break;
     case 2:
       obj.loadTexture('body3');
       break;
@@ -483,6 +510,30 @@ function makeParts(obj, p1, p2, p3) {
     //   obj.loadTexture('body4');
     //   break;
   }
+  // MOUTH GRAPHICS
+  switch (p1) {
+    case 0:
+      obj.mouth = game.add.sprite(obj.x, obj.y + 32, 'mouth1');
+      obj.mouth.anchor.set(0, 0.5);
+      obj.mouth.angle = obj.angle;
+      break;
+    case 1:
+      obj.mouth = game.add.sprite(obj.x, obj.y + 32, 'mouth2');
+      obj.mouth.anchor.set(0, 0.5);
+      obj.mouth.angle = obj.angle;
+      break;
+    case 2:
+      obj.mouth = game.add.sprite(obj.x, obj.y + 32, 'mouth3');
+      obj.mouth.anchor.set(0, 0.5);
+      obj.mouth.angle = obj.angle;
+      break;
+    case 3:
+      obj.mouth = game.add.sprite(obj.x, obj.y + 32, 'mouth4');
+      obj.mouth.anchor.set(0, 0.5);
+      obj.mouth.angle = obj.angle;
+      break;
+  }
+  // LEGS GRAPHICS
 
 }
 
@@ -492,10 +543,9 @@ function doIA(obj, type) {
       obj.IA1 = setInterval(function () {
         // DISTANCE CALCUL
         var distance = Math.sqrt((hero.x - enemy1.x)*(hero.x - enemy1.x) + (hero.y - enemy1.y)*(hero.y - enemy1.y));
-        if (distance < 512) {
-
+        if (distance < 256) {
+          bite(obj);
         }
-
         //
       }, 2000);
       break;
