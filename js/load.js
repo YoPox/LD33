@@ -33,6 +33,16 @@ var loadState = {
     game.load.spritesheet("spit", "assets/spit.png", 32, 32);
     game.load.spritesheet("bomb", "assets/bomb.png", 32, 32);
 
+    // MOUTH
+    game.load.spritesheet("mouth1", "assets/mouth_jaw.png", 32, 32);
+    game.load.image("mouth2", "assets/mouth_horn.png");
+    game.load.spritesheet("mouth3", "assets/mouth_spit.png", 32, 32);
+    game.load.spritesheet("mouth4", "assets/mouth_bomb.png", 32, 32);
+
+    // BODY
+    game.load.image("body1", "assets/body_skin.png");
+    game.load.image("body3", "assets/body_thorny.png");
+
     // FONT
     game.load.bitmapFont('Munro', 'assets/font/Munro.png', 'assets/font/Munro.fnt');
 

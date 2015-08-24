@@ -34,7 +34,7 @@ var playState = {
 
     // ENEMY1
     enemy1 = game.add.sprite(Math.floor(Math.random() * 500), Math.floor(Math.random() * 650), 'hero');
-    makeParts(enemy1, 2, 3, 3);
+    makeParts(enemy1, 2, 2, 3);
     enemy1.id = "enemy1";
     enemy1.tint = "0x888888";
     initCapacities(enemy1);
@@ -469,6 +469,20 @@ function makeParts(obj, p1, p2, p3) {
       break;
   }
   // TODO: GRAPHIC SHIT
+  switch (p2) {
+    // case 0:
+    //   obj.loadTexture('body1');
+    //   break;
+    // case 1:
+    //   obj.loadTexture('body2');
+    //   break;
+    case 2:
+      obj.loadTexture('body3');
+      break;
+    // case 3:
+    //   obj.loadTexture('body4');
+    //   break;
+  }
 
 }
 
