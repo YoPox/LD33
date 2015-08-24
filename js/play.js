@@ -6,15 +6,11 @@ var hero;
 var enemy1;
 
 // STUFF
-var hVAngle = 0;
-var capA = 250;
-var capB = -200;
-var step = 10;
 var rotStep = 25;
 var rotCap = 200
 var removeStep2 = 9;
 var removeStep = -3;
-var m, space, ctrl;
+var m, c, v, b;
 var spitSpeed = 400;
 var jawDamage = 0;
 var spitDamage = 0;
@@ -32,21 +28,24 @@ var playState = {
 
     // HERO
     hero = game.add.sprite(640, 360, 'hero');
+    makeParts(hero, piece1, piece2, piece3);
     hero.id = "hero";
     initCapacities(hero);
 
     // ENEMY1
     enemy1 = game.add.sprite(Math.floor(Math.random() * 500), Math.floor(Math.random() * 650), 'hero');
+    makeParts(enemy1, 2, 3, 3);
     enemy1.id = "enemy1";
     enemy1.tint = "0x888888";
     initCapacities(enemy1);
+    // doIA(enemy1, "sniper");
 
     // KEYBOARD
     m = game.input.keyboard.addKey(Phaser.Keyboard.M);
     m.onDown.add(function() {if(mute) {ArtRemix.play(lastBuffer);} else {ArtRemix.stop();}}, this);
-    space = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-    space.onDown.add(function() {
-      switch (piece1) {
+    c = game.input.keyboard.addKey(Phaser.Keyboard.C);
+    c.onDown.add(function() {
+      switch (hero.part1) {
         case 0:
           if (!hero.biteEffect.visible)
             bite(hero);
@@ -62,12 +61,26 @@ var playState = {
       }
 
     }, this);
-    ctrl = game.input.keyboard.addKey(Phaser.Keyboard.CONTROL);
-    ctrl.onDown.add(function() {
-      switch (piece2) {
-        case 4:
+    v = game.input.keyboard.addKey(Phaser.Keyboard.V);
+    v.onDown.add(function() {
+      switch (hero.part2) {
+        case 3:
           if (hero.canShock)
             shocker(hero);
+          break;
+      }
+
+    }, this);
+    b = game.input.keyboard.addKey(Phaser.Keyboard.B);
+    b.onDown.add(function() {
+      switch (hero.part3) {
+        case 2:
+          if (hero.canSprint)
+            sprint(hero);
+          break;
+        case 3:
+          if (hero.canDash)
+            dash(hero);
           break;
       }
 
@@ -103,40 +116,41 @@ var playState = {
     }
 
     if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-      if (hVAngle < capA)
-        hVAngle += step;
+      if (hero.hVAngle < hero.capA)
+        hero.hVAngle += hero.step;
     } else if (game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
-      if (hVAngle > capB)
-        hVAngle -= step;
+      if (hero.hVAngle > hero.capB)
+        hero.hVAngle -= hero.step;
     }
 
     // MOVEMENTS
-    game.physics.arcade.velocityFromAngle(hero.angle, hVAngle, hero.body.velocity);
+    game.physics.arcade.velocityFromAngle(hero.angle, hero.hVAngle, hero.body.velocity);
+    game.physics.arcade.velocityFromAngle(enemy1.angle, enemy1.hVAngle, enemy1.body.velocity);
+
     hero.spits.forEachAlive(function(p){
   		game.physics.arcade.velocityFromAngle(p.angle, p._speed, p.body.velocity);
   	});
-    try {
-      if (hero.hasBomb) {
-        game.physics.arcade.velocityFromAngle(hero.bomb.angle, hero.bomb.speed, hero.bomb.body.velocity);
-        hero.bomb.speed -= 1;
-        if (hero.bomb.speed < 0) {
-          hero.bomb.speed = 0;
-        }
+    if (hero.hasBomb) {
+      game.physics.arcade.velocityFromAngle(hero.bomb.angle, hero.bomb.speed, hero.bomb.body.velocity);
+      hero.bomb.speed -= 1;
+      if (hero.bomb.speed < 0) {
+        hero.bomb.speed = 0;
       }
-    } catch (e) {
-      console.log(e);
-    } finally {
-
     }
 
-
     // CHECKS
-    if (hVAngle != 0)
-      hVAngle += removeStep * hVAngle / Math.abs(hVAngle);
+    if (hero.hVAngle != 0)
+      hero.hVAngle += removeStep * hero.hVAngle / Math.abs(hero.hVAngle);
+    if (enemy1.hVAngle != 0)
+      enemy1.hVAngle += removeStep * enemy1.hVAngle / Math.abs(enemy1.hVAngle);
     if (hero.body.angularVelocity != 0)
       hero.body.angularVelocity -= removeStep2 * hero.body.angularVelocity / Math.abs(hero.body.angularVelocity);
     if (Math.abs(hero.body.angularVelocity) <= Math.abs(removeStep))
       hero.body.angularVelocity = 0;
+    if (enemy1.body.angularVelocity != 0)
+      enemy1.body.angularVelocity -= removeStep2 * enemy1.body.angularVelocity / Math.abs(enemy1.body.angularVelocity);
+    if (Math.abs(enemy1.body.angularVelocity) <= Math.abs(removeStep))
+      enemy1.body.angularVelocity = 0;
 
     // PARTICLES FADE OUT EFFECT
     hero.emitter.forEachAlive(function(p){
@@ -187,6 +201,7 @@ function bite(obj) {
 }
 
 function initCapacities(obj) {
+
   // GENERAL
   obj.anchor.set(0.5, 0.5);
   obj.angle = 90;
@@ -199,6 +214,8 @@ function initCapacities(obj) {
   obj.emitter.gravity = 0;
   obj.emitter.minParticleSpeed.setTo(-74, -74);
   obj.emitter.maxParticleSpeed.setTo(74, 74);
+  obj.hVAngle = 0;
+
   // BITE EFFECT
   obj.biteEffect = game.add.sprite(obj.x, obj.y, 'effect');
   game.physics.enable(obj.biteEffect, Phaser.Physics.ARCADE);
@@ -206,12 +223,15 @@ function initCapacities(obj) {
   obj.biteEffect.smoothed = false;
   obj.biteEffect.anchor.set(0.5, 3);
   obj.biteEffect.visible = false;
+
   // SPIT
   obj.canSpit = true;
   obj.spits = game.add.group();
+
   // BOMB
   obj.canBomb = true;
   obj.hasBomb = false;
+
   // SHOCKER
   obj.canShock = true;
   obj.shocker = game.add.emitter(obj.x, obj.y, 50);
@@ -219,6 +239,15 @@ function initCapacities(obj) {
   obj.shocker.gravity = 0;
   obj.shocker.minParticleSpeed.setTo(-100, -100);
   obj.shocker.maxParticleSpeed.setTo(100, 100);
+
+  // DASH
+  obj.canDash = true;
+
+  // SPRINT
+  obj.canSprint = true;
+  obj.capA = 250;
+  obj.capB = -200;
+  obj.step = 10;
 }
 
 function spit(obj) {
@@ -226,12 +255,14 @@ function spit(obj) {
   setTimeout(function () {
     obj.canSpit = true;
   }, spitSpeed);
-  var item = game.add.sprite(obj.x + 32 * Math.cos(obj.angle * Math.PI / 180), obj.y + 32 * Math.sin(obj.angle * Math.PI / 180), 'spit');
+  var item = game.add.sprite(obj.x + 38 * Math.cos(obj.angle * Math.PI / 180), obj.y + 38 * Math.sin(obj.angle * Math.PI / 180), 'spit', 0);
   item.anchor.setTo(0.5, 0.5);
   game.physics.enable(item, Phaser.Physics.ARCADE);
   item.angle = obj.angle;
   item.scale.set(2);
   item._speed = 400;
+  item.animations.add('a', [0, 1, 2, 3, 4, 5, 6]);
+  item.animations.play('a', 25, true);
   game.add.tween(item).to( { width: 0 }, 1250, Phaser.Easing.Exponential.OutIn, true);
   game.add.tween(item).to( { height: 0 }, 1250, Phaser.Easing.Exponential.OutIn, true);
   setTimeout(function () {
@@ -343,7 +374,7 @@ function shocker(obj) {
     var c = 32*32;
     var angle = Math.acos((b + c - a) / (2 * Math.sqrt(b) * Math.sqrt(c))) * 180 / Math.PI;
     enemy1.angle = -angle;
-    // enemy1.angleSpeed = 250;
+    enemy1.hVAngle = 250;
   }
   // HERO
   if (Math.sqrt((x - hero.x)*(x - hero.x) + (y - hero.y)*(y - hero.y)) < 100 && hero.id != obj.id) {
@@ -352,5 +383,62 @@ function shocker(obj) {
     var c = 32*32;
     var angle = Math.acos((b + c - a) / (2 * Math.sqrt(b) * Math.sqrt(c))) * 180 / Math.PI;
     hero.angle = -angle;
+    hero.hVAngle = 250;
+  }
+}
+
+function dash(obj) {
+  obj.canDash = false;
+  setTimeout(function () {
+    obj.canDash = true;
+  }, 5000);
+  obj.hVAngle = 400;
+  obj.capA += 150;
+  setTimeout(function () {
+    obj.capA -= 150;
+  }, 1500);
+}
+
+function sprint(obj) {
+  obj.canSprint = false;
+  setTimeout(function () {
+    obj.canSprint = true;
+  }, 15000);
+  setTimeout(function () {
+    obj.capA -= 100;
+    obj.capB += 100;
+    obj.step = 10;
+    if (obj.hVAngle > obj.capA)
+      obj.hVAngle = obj.capA;
+    if (obj.hVAngle < obj.capB)
+      obj.hVAngle = obj.capB;
+  }, 5000);
+  obj.capA += 100;
+  obj.capB -= 100;
+  obj.step = 20;
+}
+
+function makeParts(obj, p1, p2, p3) {
+  obj.part1 = p1;
+  obj.part2 = p2;
+  obj.part3 = p3;
+  // TODO: GRAPHIC SHIT
+}
+
+function doIA(obj, type) {
+  switch (type) {
+    case "sniper":
+      obj.IA1 = setInterval(function () {
+        // DISTANCE CALCUL
+        var distance = Math.sqrt((hero.x - enemy1.x)*(hero.x - enemy1.x) + (hero.y - enemy1.y)*(hero.y - enemy1.y));
+        if (distance < 512) {
+
+        }
+
+        //
+      }, 2000);
+      break;
+    default:
+
   }
 }
