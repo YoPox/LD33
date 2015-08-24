@@ -33,14 +33,10 @@ var loadState = {
     game.load.spritesheet("bomb", "assets/bomb.png", 32, 32);
 
     // MOUTH
-    // game.load.spritesheet("mouth1_1", "assets/mouth_jaw_skin.png", 32, 32);
-    // game.load.spritesheet("mouth1_2", "assets/mouth_jaw_shell.png", 32, 32);
-    // game.load.spritesheet("mouth1_3", "assets/mouth_jaw_thorny.png", 32, 32);
-    // game.load.spritesheet("mouth1_4", "assets/mouth_jaw_shocker.png", 32, 32);
-    game.load.spritesheet("mouth1_1", "assets/mouth_jaw.png", 32, 32);
-    game.load.spritesheet("mouth1_2", "assets/mouth_jaw.png", 32, 32);
-    game.load.spritesheet("mouth1_3", "assets/mouth_jaw.png", 32, 32);
-    game.load.spritesheet("mouth1_4", "assets/mouth_jaw.png", 32, 32);
+    game.load.spritesheet("mouth1_1", "assets/mouth_jaw_skin.png", 32, 32);
+    game.load.spritesheet("mouth1_2", "assets/mouth_jaw_shell.png", 32, 32);
+    game.load.spritesheet("mouth1_3", "assets/mouth_jaw_thorny.png", 32, 32);
+    game.load.spritesheet("mouth1_4", "assets/mouth_jaw_shocker.png", 32, 32);
     game.load.image("mouth2_1", "assets/mouth_horn_skin.png");
     game.load.image("mouth2_2", "assets/mouth_horn_shell.png");
     game.load.image("mouth2_3", "assets/mouth_horn_thorny.png");

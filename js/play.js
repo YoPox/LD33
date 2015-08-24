@@ -107,7 +107,7 @@ var playState = {
 
     // COLLISIONS
     game.physics.arcade.collide(hero, enemy1);
-    game.physics.arcade.collide([hero, enemy1], hero.bomb);
+    game.physics.arcade.collide(enemy1, hero.bomb, bombTouch, null, this);
     game.physics.arcade.overlap(hero.spits, enemy1, spitHit, null, this);
 
     if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
@@ -389,6 +389,11 @@ function bombCallback(bomb) {
     }, bomb.intSpeed);
   }
 
+}
+
+function bombTouch(obj1, obj2) {
+  console.log("OK");
+  obj2.speed = 0;
 }
 
 function damage(obj, quantity) {
