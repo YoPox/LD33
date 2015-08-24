@@ -16,19 +16,17 @@ var p1, p2, p3;
 // STUFF
 var actName = Math.floor(Math.random() * (names.length));
 
-var pieces1 = ["jaw", "horn", "spit", "bomb", "baby"];
-var pieces2 = ["skin", "shell", "thorny", "camo", "shocker"];
-var pieces3 = ["LEGS", "ANTILOPE", "spider", "FROG", "slime"];
+var pieces1 = ["jaw", "horn", "spit", "bomb"];
+var pieces2 = ["skin", "shell", "thorny", "shocker"];
+var pieces3 = ["LEGS", "spider", "ANTILOPE", "FROG", "slime"];
 
 var descs1 = ["Quench your thirst for blood\nby bitting your enemies.",
 "Impale other monsters\nwith this harp horn.",
 "Attack your enemies while keeping\nyour distance by spitting.",
-"Shoot a bomb at a group of creatures\nto blow them up into pieces.",
-"Summons your babies to chase\nand kill your enemies."];
+"Shoot a bomb at a group of creatures\nto blow them up into pieces."];
 var descs2 = ["Flexible fabulous light\nand shiny skin.",
 "Come in the arena with this\nheavy mastodonte shell.",
 "Become a goddamn hedgehog\nwith thorns and shit.",
-"Sneak behind your enemies or go\nAFK thanks to temporary invisibility.",
 "Get yourself out of shity situations\nusing this shockwave."];
 var descs3 = ["You can walk with those.\nHow cool is that ?",
 "I hate spider.\nBut they can move back faster...",
