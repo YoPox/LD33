@@ -20,18 +20,18 @@ var pieces1 = ["jaw", "horn", "spit", "bomb"];
 var pieces2 = ["skin", "shell", "thorny", "shocker"];
 var pieces3 = ["LEGS", "spider", "ANTILOPE", "FROG"];
 
-var descs1 = ["Quench your thirst for blood\nby bitting your enemies.",
-"Impale other monsters\nwith this harp horn.",
-"Attack your enemies while keeping\nyour distance by spitting.",
-"Shoot a bomb at a group of creatures\nto blow them up into pieces."];
-var descs2 = ["Flexible fabulous light\nand shiny skin.",
-"Come in the arena with this\nheavy mastodonte shell.",
-"Become a goddamn hedgehog\nwith thorns and shit.",
-"Get yourself out of shity situations\nusing this shockwave."];
-var descs3 = ["You can walk with those.\nHow cool is that ?",
-"I hate spider.\nBut they can move back faster...",
-"Sprint away you coward.\nI'll catch you anyway.",
-"Dash forward to escape or attack."];
+var descs1 = ["JAW : Quench your thirst for blood \nby bitting your enemies",
+"HORN : Impale other monsters \nwith this sharp horn",
+"SPIT : Attack your enemies while \nkeeping your distance by spitting",
+"BOMB : Shoot a bomb at a group of \ncreatures to blow them up into pieces"];
+var descs2 = ["SKIN : Flexible fabulous light \nand shiny skin",
+"SHELL : Come in the arena with this \nheavy mastodonte shell",
+"THORNY : Become a goddamn hedgehog \nwith thorns and shit",
+"SHOCKER : Get yourself out of shity \nsituations using this shockwave"];
+var descs3 = ["LEGS : You can walk with those. \nHow cool is that ?",
+"SPIDER : I hate spider. But they \ncan move back faster..",
+"ANTILOPE : Sprint away you coward. \nI'll catch you anyway",
+"FROG : Dash forward to escape \nor attack"];
 var piece1 = Math.floor(Math.random() * (pieces1.length));
 var piece2 = Math.floor(Math.random() * (pieces2.length));
 var piece3 = Math.floor(Math.random() * (pieces3.length));
@@ -48,8 +48,8 @@ var chooseState = {
   create: function() {
 
     // MUSIC PLAYBACK
-    // var buffer = game.cache.getBinary('selec_xm');
-    // ArtRemix.play(buffer);
+    var buffer = game.cache.getBinary('selec_xm');
+    ArtRemix.play(buffer);
 
     // ARRAYS
     arr1 = game.add.sprite(160, 308, 'arrow');

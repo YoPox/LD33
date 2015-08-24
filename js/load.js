@@ -71,9 +71,14 @@ var loadState = {
     game.load.binary('selec_xm', 'assets/audio/selec.xm', binaryLoadCallback, this);
     game.load.binary('cbt_xm', 'assets/audio/cbt.xm', binaryLoadCallback, this);
 
+    // EFFECTS
+    game.load.audio('audio_dash', 'assets/audio/bruitages/dash.ogg');
+
   },
 
   create: function() {
+
+    audio_dash = game.add.audio('audio_dash');
 
     game.stage.backgroundColor = "#2B3D73";
 

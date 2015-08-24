@@ -13,10 +13,10 @@ var removeStep2 = 9;
 var removeStep = -3;
 var m, c, v, b;
 var spitSpeed = 400;
-var jawDamage = 0;
-var spitDamage = 0;
-var bombDamage = 0;
-var hornDamage = 0;
+var jawDamage = 30;
+var spitDamage = 10;
+var bombDamage = 40;
+var hornDamage = 10;
 var bombAniSpeed = 100;
 
 var playState = {
@@ -24,8 +24,8 @@ var playState = {
   create: function() {
 
     // MUSIC PLAYBACK
-    // var buffer = game.cache.getBinary('cbt_xm');
-    // ArtRemix.play(buffer);
+    var buffer = game.cache.getBinary('cbt_xm');
+    ArtRemix.play(buffer);
 
     bg = game.add.sprite(0, 0, "sand");
     bg.scale.set(4);
@@ -159,6 +159,7 @@ var playState = {
     enemy2.emitter.y = enemy2.y;
     enemy3.emitter.x = enemy3.x;
     enemy3.emitter.y = enemy3.y;
+
     // MOUTH
     hero.mouth.angle = hero.angle;
     hero.mouth.x = hero.x + (32 + (6 / (1 + Math.exp(-0.015 * hero.hVAngle)) - 3)) * Math.cos(hero.angle * Math.PI / 180);
@@ -642,20 +643,30 @@ function bombCallback(bomb) {
 
 function damage(obj, quantity) {
   obj.life -= quantity;
-  obj.emitter.start(true, 500, 0, 15);
   obj.justT = true;
-  obj.invul = setInterval(function() {
-    obj.alpha = 1 - obj.alpha;
-    obj.mouth.alpha = 1 - obj.mouth.alpha;
-    obj.legs.alpha = 1 - obj.legs.alpha;
-  }, 200);
-  setTimeout(function() {
-    clearInterval(obj.invul);
-    obj.alpha = 1;
-    obj.mouth.alpha = 1;
-    obj.legs.alpha = 1;
-    obj.justT = false;
-  }, 1500);
+  if (obj.life <= 0) {
+    obj.emitter.start(true, 500, 0, 50);
+    game.add.tween(obj).to( { alpha: 0 }, 500, Phaser.Easing.Exponential.InOut, true);
+    game.add.tween(obj.mouth).to( { alpha: 0 }, 500, Phaser.Easing.Exponential.InOut, true);
+    game.add.tween(obj.legs).to( { alpha: 0 }, 500, Phaser.Easing.Exponential.InOut, true);
+    clearInterval(obj.atk);
+    clearInterval(obj.ia1);
+  } else {
+    obj.emitter.start(true, 500, 0, 15);
+    obj.invul = setInterval(function() {
+      obj.alpha = 1 - obj.alpha;
+      obj.mouth.alpha = 1 - obj.mouth.alpha;
+      obj.legs.alpha = 1 - obj.legs.alpha;
+    }, 200);
+    setTimeout(function() {
+      clearInterval(obj.invul);
+      obj.alpha = 1;
+      obj.mouth.alpha = 1;
+      obj.legs.alpha = 1;
+      obj.justT = false;
+    }, 1500);
+  }
+
 }
 
 function shocker(obj) {
@@ -707,6 +718,7 @@ function shocker(obj) {
 }
 
 function dash(obj) {
+  audio_dash.play();
   obj.canDash = false;
   setTimeout(function () {
     obj.canDash = true;
@@ -850,7 +862,21 @@ function makeParts(obj, p1, p2, p3) {
 
 function doIA(obj) {
 
-    obj.IA1 = setInterval(function () {
+    if (obj.part1 == 0 && obj.canBite) {
+      obj.atk = setInterval(function () {
+        bite(obj);
+      }, 550);
+    } else if (obj.part1 == 2 && obj.canSpit) {
+      obj.atk = setInterval(function () {
+        spit(obj);
+      }, 450);
+    } else if(obj.part1 == 3 && obj.canBomb) {
+      obj.atk = setInterval(function () {
+        bomb(obj);
+      }, 5000);
+    }
+
+    obj.ia1 = setInterval(function () {
 
       // MOVE
 
@@ -904,16 +930,6 @@ function doIA(obj) {
           }
         }, 17);
 
-        if (Math.random() * 3 < 1) {
-          if (obj.part1 == 0 && obj.canBite) {
-            bite(obj);
-          } else if (obj.part1 == 2 && obj.canSpit) {
-            spit(obj);
-          } else if(obj.part1 == 3 && obj.canBomb) {
-            bomb(obj);
-          }
-        }
-
       } else if (distance > 250) {
         // DISTANT
         // AIM AND SHOOT
@@ -944,14 +960,6 @@ function doIA(obj) {
           }
         }, 17);
 
-        if (obj.part1 == 0 && obj.canBite) {
-          bite(obj);
-        } else if (obj.part1 == 2 && obj.canSpit) {
-          spit(obj);
-        } else if(obj.part1 == 3 && obj.canBomb) {
-          bomb(obj);
-        }
-
       } else {
         // CLOSE
         // BITE
@@ -964,14 +972,6 @@ function doIA(obj) {
             obj.hVAngle -= 5;
             obj.legs.animations.play("walk", 6, true);
         }, 17);
-
-        if (obj.part1 == 0 && obj.canBite) {
-          bite(obj);
-        } else if (obj.part1 == 2 && obj.canSpit) {
-          spit(obj);
-        } else if(obj.part1 == 3 && obj.canBomb) {
-          bomb(obj);
-        }
 
         // INTERVAL TO ROTATE
         var rotateInt = setInterval(function () {
