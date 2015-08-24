@@ -508,7 +508,7 @@ function initCapacities(obj) {
 }
 
 function bite(obj) {
-
+  audio_morsure.play();
   obj.canBite = false;
   obj.mouth.frame = 1;
   setTimeout(function () {
@@ -600,6 +600,7 @@ function spit(obj) {
 }
 
 function spitHit(obj1, obj2) {
+  audio_degat.play();
   if (!obj1.justT) {
     game.add.tween(obj2).to( { alpha: 0 }, 250, Phaser.Easing.Exponential.InOut, true);
     setTimeout(function () {
@@ -647,6 +648,7 @@ function bomb(obj) {
 }
 
 function bombExplode(x, y) {
+  audio_explosion.play();
   if (!enemy1.justT) {
     if (Math.sqrt((x - enemy1.x)*(x - enemy1.x) + (y - enemy1.y)*(y - enemy1.y)) < 100) {
       damage(enemy1, bombDamage);
@@ -684,6 +686,7 @@ function bombCallback(bomb) {
 }
 
 function damage(obj, quantity) {
+  audio_degat.play();
   obj.life -= quantity;
   obj.justT = true;
   if (obj.life <= 0) {
@@ -712,6 +715,7 @@ function damage(obj, quantity) {
 }
 
 function shocker(obj) {
+  audio_shockwave.play();
   obj.canShock = false;
   setTimeout(function () {
     obj.canShock = true;
@@ -773,6 +777,7 @@ function dash(obj) {
 }
 
 function sprint(obj) {
+  audio_sprint.play();
   obj.canSprint = false;
   setTimeout(function () {
     obj.canSprint = true;
