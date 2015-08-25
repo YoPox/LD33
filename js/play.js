@@ -6,6 +6,8 @@ var enemy3;
 
 var bg;
 var countdown;
+var win;
+var lose;
 
 // STUFF
 var rotStep = 25;
@@ -94,9 +96,35 @@ var playState = {
     makeParts(enemy3, Math.floor(Math.random() * 4), Math.floor(Math.random() * 4), Math.floor(Math.random() * 4));
     enemy3.id = "enemy3";
 
+    hero.mouth.angle = hero.angle;
+    hero.shadow.angle = hero.angle;
+    hero.mouth.x = hero.x + (32 + (6 / (1 + Math.exp(-0.015 * hero.hVAngle)) - 3)) * Math.cos(hero.angle * Math.PI / 180);
+    hero.mouth.y = hero.y + (32 + (6 / (1 + Math.exp(-0.015 * hero.hVAngle)) - 3)) * Math.sin(hero.angle * Math.PI / 180);
+    enemy1.mouth.angle = enemy1.angle;
+    enemy1.shadow.angle = enemy1.angle;
+    enemy1.mouth.x = enemy1.x + (32 + (4 / (1 + Math.exp(-0.02 * enemy1.hVAngle)) - 2)) * Math.cos(enemy1.angle * Math.PI / 180);
+    enemy1.mouth.y = enemy1.y + (32 + (4 / (1 + Math.exp(-0.02 * enemy1.hVAngle)) - 2)) * Math.sin(enemy1.angle * Math.PI / 180);
+    enemy2.mouth.angle = enemy2.angle;
+    enemy2.shadow.angle = enemy2.angle;
+    enemy2.mouth.x = enemy2.x + (32 + (4 / (1 + Math.exp(-0.02 * enemy2.hVAngle)) - 2)) * Math.cos(enemy2.angle * Math.PI / 180);
+    enemy2.mouth.y = enemy2.y + (32 + (4 / (1 + Math.exp(-0.02 * enemy2.hVAngle)) - 2)) * Math.sin(enemy2.angle * Math.PI / 180);
+    enemy3.mouth.angle = enemy3.angle;
+    enemy3.shadow.angle = enemy3.angle;
+    enemy3.mouth.x = enemy3.x + (32 + (4 / (1 + Math.exp(-0.02 * enemy3.hVAngle)) - 2)) * Math.cos(enemy3.angle * Math.PI / 180);
+    enemy3.mouth.y = enemy3.y + (32 + (4 / (1 + Math.exp(-0.02 * enemy3.hVAngle)) - 2)) * Math.sin(enemy3.angle * Math.PI / 180);
+
     // KEYBOARD
     m = game.input.keyboard.addKey(Phaser.Keyboard.M);
-    m.onDown.add(function() {if(mute) {ArtRemix.play(lastBuffer);} else {ArtRemix.stop();}}, this);
+    m.onDown.add(function() {if(mute) {ArtRemix.play(lastBuffer);} else {
+      ArtRemix.stop();
+      audio_dash.volume = 0;
+      audio_degat.volume = 0;
+      audio_explosion.volume = 0;
+      audio_morsure.volume = 0;
+      audio_pas.volume = 0;
+      audio_shockwave.volume = 0;
+      audio_sprint.volume = 0;
+    }}, this);
     c = game.input.keyboard.addKey(Phaser.Keyboard.C);
     c.onDown.add(function() {
       switch (hero.part1) {
@@ -191,26 +219,30 @@ var playState = {
       hero.body.velocity.x = 0;
       hero.body.velocity.y = 0;
       // EMITTERS
-      hero.emitter.x = hero.x;
-      hero.emitter.y = hero.y;
-      enemy1.emitter.x = enemy1.x;
-      enemy1.emitter.y = enemy1.y;
-      enemy2.emitter.x = enemy2.x;
-      enemy2.emitter.y = enemy2.y;
-      enemy3.emitter.x = enemy3.x;
-      enemy3.emitter.y = enemy3.y;
+      hero.emitter.x = hero.shadow.x = hero.x;
+      hero.emitter.y = hero.shadow.y = hero.y;
+      enemy1.emitter.x = enemy1.shadow.x = enemy1.x;
+      enemy1.emitter.y = enemy1.shadow.y = enemy1.y;
+      enemy2.emitter.x = enemy2.shadow.x = enemy2.x;
+      enemy2.emitter.y = enemy2.shadow.y = enemy2.y;
+      enemy3.emitter.x = enemy3.shadow.x = enemy3.x;
+      enemy3.emitter.y = enemy3.shadow.y = enemy3.y;
 
       // MOUTH
       hero.mouth.angle = hero.angle;
+      hero.shadow.angle = hero.angle;
       hero.mouth.x = hero.x + (32 + (6 / (1 + Math.exp(-0.015 * hero.hVAngle)) - 3)) * Math.cos(hero.angle * Math.PI / 180);
       hero.mouth.y = hero.y + (32 + (6 / (1 + Math.exp(-0.015 * hero.hVAngle)) - 3)) * Math.sin(hero.angle * Math.PI / 180);
       enemy1.mouth.angle = enemy1.angle;
+      enemy1.shadow.angle = enemy1.angle;
       enemy1.mouth.x = enemy1.x + (32 + (4 / (1 + Math.exp(-0.02 * enemy1.hVAngle)) - 2)) * Math.cos(enemy1.angle * Math.PI / 180);
       enemy1.mouth.y = enemy1.y + (32 + (4 / (1 + Math.exp(-0.02 * enemy1.hVAngle)) - 2)) * Math.sin(enemy1.angle * Math.PI / 180);
       enemy2.mouth.angle = enemy2.angle;
+      enemy2.shadow.angle = enemy2.angle;
       enemy2.mouth.x = enemy2.x + (32 + (4 / (1 + Math.exp(-0.02 * enemy2.hVAngle)) - 2)) * Math.cos(enemy2.angle * Math.PI / 180);
       enemy2.mouth.y = enemy2.y + (32 + (4 / (1 + Math.exp(-0.02 * enemy2.hVAngle)) - 2)) * Math.sin(enemy2.angle * Math.PI / 180);
       enemy3.mouth.angle = enemy3.angle;
+      enemy3.shadow.angle = enemy3.angle;
       enemy3.mouth.x = enemy3.x + (32 + (4 / (1 + Math.exp(-0.02 * enemy3.hVAngle)) - 2)) * Math.cos(enemy3.angle * Math.PI / 180);
       enemy3.mouth.y = enemy3.y + (32 + (4 / (1 + Math.exp(-0.02 * enemy3.hVAngle)) - 2)) * Math.sin(enemy3.angle * Math.PI / 180);
 
@@ -694,8 +726,30 @@ function damage(obj, quantity) {
     game.add.tween(obj).to( { alpha: 0 }, 500, Phaser.Easing.Exponential.InOut, true);
     game.add.tween(obj.mouth).to( { alpha: 0 }, 500, Phaser.Easing.Exponential.InOut, true);
     game.add.tween(obj.legs).to( { alpha: 0 }, 500, Phaser.Easing.Exponential.InOut, true);
+    game.add.tween(obj.shadow).to( { alpha: 0 }, 500, Phaser.Easing.Exponential.InOut, true);
+    setTimeout(function () {
+      obj.body.width = 0;
+      obj.body.height = 0;
+    }, 500);
     clearInterval(obj.atk);
     clearInterval(obj.ia1);
+    if (obj.id == "player") {
+      lose = game.add.sprite(640, 360, "lose");
+      lose.anchor.set(0.5);
+      lose.alpha = 0;
+      game.add.tween(lose).to( { alpha: 1 }, 1500, Phaser.Easing.Exponential.InOut, true);
+      enter = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+      enter.onDown.add(function() {quitPlay();}, this);
+    } else {
+      if (enemy1.life <= 0 && enemy2.life <= 0 && enemy3.life <= 0) {
+        win = game.add.sprite(640, 360, "win");
+        win.anchor.set(0.5);
+        win.alpha = 0;
+        game.add.tween(win).to( { alpha: 1 }, 1500, Phaser.Easing.Exponential.InOut, true);
+        enter = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        enter.onDown.add(function() {quitPlay();}, this);
+      }
+    }
   } else {
     obj.emitter.start(true, 500, 0, 15);
     obj.invul = setInterval(function() {
@@ -797,6 +851,7 @@ function sprint(obj) {
 }
 
 function makeParts(obj, p1, p2, p3) {
+
   // MOUTH
   obj.part1 = p1;
   if (p1 == 1) {
@@ -840,6 +895,10 @@ function makeParts(obj, p1, p2, p3) {
       }, 2000);
       break;
   }
+
+  // SHADOW
+  obj.shadow = game.add.sprite(obj.x, obj.y, "shadow");
+  obj.shadow.anchor.set(0.5);
 
   // BODY GRAPHICS
   switch (p2) {
@@ -904,6 +963,7 @@ function makeParts(obj, p1, p2, p3) {
   }
   obj.legs.animations.add("walk", [0, 1, 2, 3]);
   obj.legs.animations.play("walk", 6, false);
+
   obj.bringToTop();
 }
 
@@ -1077,4 +1137,16 @@ function getCloserAngle(obj) {
     }
   }
   return angle;
+}
+
+function quitPlay() {
+  game.add.tween(game.world).to( { alpha: 0 }, 1500, Phaser.Easing.Exponential.InOut, true);
+  setTimeout(function () {
+      hero.destroy();
+      enemy1.destroy();
+      enemy2.destroy();
+      enemy3.destroy();
+      game.world.alpha = 1;
+      game.state.start("menu");
+  }, 1500);
 }

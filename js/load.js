@@ -28,8 +28,11 @@ var loadState = {
     // GAME
     game.load.image("hero", "assets/dummyHero.png");
     game.load.image("part3", "assets/redPart_small.png");
-    game.load.image("part4", "assets/shockerPart.png");
+    game.load.image("part4", "assets/particule_sand.png");
     game.load.image("sand", "assets/sand.png");
+    game.load.image("win", "assets/win.png");
+    game.load.image("lose", "assets/lose.png");
+    game.load.image("shadow", "assets/shadow.png");
     game.load.spritesheet("countdown", "assets/countdown.png", 64, 64);
     game.load.spritesheet("spit", "assets/spit.png", 32, 32);
     game.load.spritesheet("bomb", "assets/bomb.png", 32, 32);
@@ -61,7 +64,7 @@ var loadState = {
     // LEGS
     game.load.spritesheet("legs1", "assets/leg_leg.png", 64, 64);
     game.load.spritesheet("legs2", "assets/leg_spider.png", 64, 64);
-    game.load.spritesheet("legs3", "assets/leg_spider.png", 64, 64);
+    game.load.spritesheet("legs3", "assets/leg_antilope.png", 64, 64);
     game.load.spritesheet("legs4", "assets/leg_frog.png", 64, 64);
 
     // FONT
@@ -85,12 +88,19 @@ var loadState = {
   create: function() {
 
     audio_dash = game.add.audio('audio_dash');
+    audio_dash.volume = 0.45;
     audio_degat = game.add.audio('audio_degat');
+    audio_degat.volume = 0.45;
     audio_explosion = game.add.audio('audio_explosion');
+    audio_explosion.volume = 0.45;
     audio_morsure = game.add.audio('audio_morsure');
+    audio_morsure.volume = 0.45;
     audio_pas = game.add.audio('audio_pas');
+    audio_pas.volume = 0.45;
     audio_shockwave = game.add.audio('audio_shockwave');
+    audio_shockwave.volume = 0.45;
     audio_sprint = game.add.audio('audio_sprint');
+    audio_sprint.volume = 0.45;
 
     game.stage.backgroundColor = "#2B3D73";
 
