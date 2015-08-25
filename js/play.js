@@ -752,6 +752,7 @@ function damage(obj, quantity) {
     game.add.tween(obj.mouth).to( { alpha: 0 }, 500, Phaser.Easing.Exponential.InOut, true);
     game.add.tween(obj.legs).to( { alpha: 0 }, 500, Phaser.Easing.Exponential.InOut, true);
     game.add.tween(obj.shadow).to( { alpha: 0 }, 500, Phaser.Easing.Exponential.InOut, true);
+    obj.moveEmitter.destroy();
     setTimeout(function () {
       obj.body.width = 0;
       obj.body.height = 0;

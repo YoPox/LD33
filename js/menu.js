@@ -44,7 +44,7 @@ var menuState = {
     var bmd = game.add.bitmapData(1280, 80);
     bmd.ctx.beginPath();
     bmd.ctx.rect(0, 0, 1280, 80);
-    bmd.ctx.fillStyle = '#000000';
+    bmd.ctx.fillStyle = '#b2af5c';
     bmd.ctx.fill();
     selectionRect = game.add.sprite(game.width / 2, 3 * game.height / 4 - 80, bmd);
     selectionRect.anchor.set(0.5, 0.5);
@@ -57,7 +57,7 @@ var menuState = {
     playText.alpha = 0;
     setTimeout(function () {
       game.add.tween(playText).to( { alpha: 1 }, 1000, Phaser.Easing.Exponential.OutIn, true);
-      game.add.tween(selectionRect).to( { alpha: 0.2 }, 1000, Phaser.Easing.Exponential.OutIn, true);
+      game.add.tween(selectionRect).to( { alpha: 1 }, 1000, Phaser.Easing.Exponential.OutIn, true);
       game.add.tween(playText).to( { x: game.width / 2 }, 750, Phaser.Easing.Exponential.InOut, true);
     }, 900);
     playText.inputEnabled = true;
@@ -200,7 +200,7 @@ function select() {
 }
 
 function twitt() {
-  var msg = encodeURIComponent('I played "Be The MASTER" by @ArtRemix38, @Ixous94, @olgret38 and @YoPoxDEV ! #LD33');
+  var msg = encodeURIComponent('I played "Be THE Monster" by @ArtRemix38, @Ixous94, @olgret38 and @YoPoxDEV ! #LD33');
   var url = encodeURIComponent('http://www.eLLectron.com/games/LD33');
   var link = 'http://twitter.com/intent/tweet?text=' + msg + '&url=' + url;
   window.open(link, '_blank', 'location=yes,height=256,width=512,scrollbars=yes,status=yes');
