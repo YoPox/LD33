@@ -17,6 +17,8 @@ var menuState = {
 
   create: function() {
 
+    block = false;
+
     // MUSIC PLAYBACK
     var buffer = game.cache.getBinary('title_xm');
     ArtRemix.play(buffer);
@@ -134,14 +136,9 @@ function start() {
     // FADE OUT
     game.add.tween(game.world).to( { alpha: 0 }, 1500, Phaser.Easing.Exponential.InOut, true);
 
-    // DESTROY SPRITES AND CHANGE STATE
+    // CHANGE STATE
     setTimeout(function () {
         clearInterval(moveInt);
-        title.destroy();
-        phaser.destroy();
-        playText.destroy();
-        shareText.destroy();
-        selectionRect.destroy();
         game.state.start("choose");
     }, 1500);
   }

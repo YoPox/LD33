@@ -20,6 +20,7 @@ var jawDamage = 30;
 var spitDamage = 10;
 var bombDamage = 40;
 var hornDamage = 10;
+var thornyDamage = 5;
 var bombAniSpeed = 100;
 var startGame = false;
 
@@ -29,7 +30,6 @@ var playState = {
 
     // MUSIC PLAYBACK
     var buffer = game.cache.getBinary('cbt_xm');
-    ArtRemix.play(buffer);
 
     bg = game.add.sprite(0, 0, "sand");
     bg.scale.set(4);
@@ -127,43 +127,48 @@ var playState = {
     }}, this);
     c = game.input.keyboard.addKey(Phaser.Keyboard.C);
     c.onDown.add(function() {
-      switch (hero.part1) {
-        case 0:
-          if (hero.canBite)
-            bite(hero);
-          break;
-        case 2:
-          if (hero.canSpit)
-            spit(hero);
-          break;
-        case 3:
-          if (hero.canBomb)
-            bomb(hero);
-          break;
+      if (hero.life > 0 && startGame) {
+        switch (hero.part1) {
+          case 0:
+            if (hero.canBite)
+              bite(hero);
+            break;
+          case 2:
+            if (hero.canSpit)
+              spit(hero);
+            break;
+          case 3:
+            if (hero.canBomb)
+              bomb(hero);
+            break;
+        }
       }
-
     }, this);
     v = game.input.keyboard.addKey(Phaser.Keyboard.V);
     v.onDown.add(function() {
-      switch (hero.part2) {
-        case 3:
-          if (hero.canShock)
-            shocker(hero);
-          break;
+      if (hero.life > 0 && startGame) {
+        switch (hero.part2) {
+          case 3:
+            if (hero.canShock)
+              shocker(hero);
+            break;
+        }
       }
 
     }, this);
     b = game.input.keyboard.addKey(Phaser.Keyboard.B);
     b.onDown.add(function() {
-      switch (hero.part3) {
-        case 2:
-          if (hero.canSprint)
-            sprint(hero);
-          break;
-        case 3:
-          if (hero.canDash)
-            dash(hero);
-          break;
+      if (hero.life > 0 && startGame) {
+        switch (hero.part3) {
+          case 2:
+            if (hero.canSprint)
+              sprint(hero);
+            break;
+          case 3:
+            if (hero.canDash)
+              dash(hero);
+            break;
+        }
       }
 
     }, this);
@@ -202,6 +207,7 @@ var playState = {
     }, 4000);
 
     setTimeout(function () {
+      ArtRemix.play(buffer);
       countdown.destroy();
       startGame = true;
       doIA(enemy1);
@@ -260,10 +266,10 @@ var playState = {
       enemy3.legs.y = enemy3.y;
 
       // COLLISIONS
-      game.physics.arcade.collide(hero, [enemy1, enemy2, enemy3]);
-      game.physics.arcade.collide(enemy1, [hero, enemy2, enemy3]);
-      game.physics.arcade.collide(enemy2, [enemy1, hero, enemy3]);
-      game.physics.arcade.collide(enemy3, [enemy1, enemy2, hero]);
+      game.physics.arcade.collide(hero, [enemy1, enemy2, enemy3], touchPlayer, null, this);
+      game.physics.arcade.collide(enemy1, [hero, enemy2, enemy3], touchPlayer, null, this);
+      game.physics.arcade.collide(enemy2, [enemy1, hero, enemy3], touchPlayer, null, this);
+      game.physics.arcade.collide(enemy3, [enemy1, enemy2, hero], touchPlayer, null, this);
       game.physics.arcade.collide([hero, enemy1, enemy2, enemy3], [hero.bomb, enemy1.bomb, enemy2.bomb, enemy3.bomb]);
       game.physics.arcade.overlap(hero.spits, [enemy1, enemy2, enemy3], spitHit, null, this);
       game.physics.arcade.overlap(enemy1.spits, [hero, enemy2, enemy3], spitHit, null, this);
@@ -424,14 +430,26 @@ var playState = {
       if (enemy3.hVAngle != 0)
         enemy3.hVAngle += removeStep * enemy3.hVAngle / Math.abs(enemy3.hVAngle);
 
-      if (Math.abs(hero.hVAngle) < 15)
+      if (Math.abs(hero.hVAngle) < 15) {
         hero.legs.animations.stop();
-      if (Math.abs(enemy1.hVAngle) < 15)
+      } else {
+        hero.moveEmitter.start(true, 500, 0, 2);
+      }
+      if (Math.abs(enemy1.hVAngle) < 15) {
         enemy1.legs.animations.stop();
-      if (Math.abs(enemy2.hVAngle) < 15)
+      } else {
+        enemy1.moveEmitter.start(true, 500, 0, 2);
+      }
+      if (Math.abs(enemy2.hVAngle) < 15) {
         enemy2.legs.animations.stop();
-      if (Math.abs(enemy3.hVAngle) < 15)
+      } else {
+        enemy2.moveEmitter.start(true, 500, 0, 2);
+      }
+      if (Math.abs(enemy3.hVAngle) < 15) {
         enemy3.legs.animations.stop();
+      } else {
+        enemy3.moveEmitter.start(true, 500, 0, 2);
+      }
 
       if (hero.body.angularVelocity != 0)
         hero.body.angularVelocity -= removeStep2 * hero.body.angularVelocity / Math.abs(hero.body.angularVelocity);
@@ -537,6 +555,14 @@ function initCapacities(obj) {
   obj.capA = 250;
   obj.capB = -200;
   obj.step = 10;
+
+  // MOVE PART
+  obj.moveEmitter = game.add.emitter(obj.x, obj.y, 50);
+  obj.moveEmitter.makeParticles('part4');
+  obj.moveEmitter.gravity = 0;
+  obj.moveEmitter.minParticleSpeed.setTo(-100, -100);
+  obj.moveEmitter.maxParticleSpeed.setTo(100, 100);
+
 }
 
 function bite(obj) {
@@ -733,7 +759,7 @@ function damage(obj, quantity) {
     }, 500);
     clearInterval(obj.atk);
     clearInterval(obj.ia1);
-    if (obj.id == "player") {
+    if (obj.id == "hero") {
       lose = game.add.sprite(640, 360, "lose");
       lose.anchor.set(0.5);
       lose.alpha = 0;
@@ -769,6 +795,16 @@ function damage(obj, quantity) {
 }
 
 function shocker(obj) {
+  obj.frame = 1;
+  setTimeout(function () {
+    obj.frame = 2;
+  }, 250);
+  setTimeout(function () {
+    obj.frame = 1;
+  }, 750);
+  setTimeout(function () {
+    obj.frame = 0;
+  }, 1000);
   audio_shockwave.play();
   obj.canShock = false;
   setTimeout(function () {
@@ -898,7 +934,7 @@ function makeParts(obj, p1, p2, p3) {
 
   // SHADOW
   obj.shadow = game.add.sprite(obj.x, obj.y, "shadow");
-  obj.shadow.anchor.set(0.5);
+  obj.shadow.anchor.set(0.425, 0.5);
 
   // BODY GRAPHICS
   switch (p2) {
@@ -1037,6 +1073,12 @@ function doIA(obj) {
           }
         }, 17);
 
+        if (obj.part2 == 3 && obj.canDash) {
+          dash(obj);
+        } else if (obj.part2 == 2 && obj.canSprint) {
+          sprint(obj);
+        }
+
       } else if (distance > 250) {
         // DISTANT
         // AIM AND SHOOT
@@ -1097,6 +1139,13 @@ function doIA(obj) {
           }
 
         }, 17);
+
+        if ((obj.part1 == 2 || obj.part1 == 3) && obj.part2 == 3 && obj.canDash) {
+          dash(obj);
+        } else if ((obj.part1 == 2 || obj.part1 == 3) && obj.part2 == 2 && obj.canSprint) {
+          sprint(obj);
+        }
+
       }
 
       //
@@ -1149,4 +1198,17 @@ function quitPlay() {
       game.world.alpha = 1;
       game.state.start("menu");
   }, 1500);
+}
+
+function touchPlayer(obj1, obj2) {
+  if (obj1.hitSides) {
+    if (!obj2.justT) {
+      damage(obj2, thornyDamage);
+    }
+  }
+  if (obj2.hitSides) {
+    if (!obj1.justT) {
+      damage(obj1, thornyDamage);
+    }
+  }
 }
