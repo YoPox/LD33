@@ -80,7 +80,6 @@ var loadState = {
     game.load.audio('audio_degat', 'assets/audio/bruitages/degat.ogg');
     game.load.audio('audio_explosion', 'assets/audio/bruitages/explosion.ogg');
     game.load.audio('audio_morsure', 'assets/audio/bruitages/morsure.ogg');
-    game.load.audio('audio_pas', 'assets/audio/bruitages/pas.ogg');
     game.load.audio('audio_shockwave', 'assets/audio/bruitages/shockwave.ogg');
     game.load.audio('audio_sprint', 'assets/audio/bruitages/sprint.ogg');
   },
@@ -95,8 +94,6 @@ var loadState = {
     audio_explosion.volume = 0.45;
     audio_morsure = game.add.audio('audio_morsure');
     audio_morsure.volume = 0.45;
-    audio_pas = game.add.audio('audio_pas');
-    audio_pas.volume = 0.45;
     audio_shockwave = game.add.audio('audio_shockwave');
     audio_shockwave.volume = 0.45;
     audio_sprint = game.add.audio('audio_sprint');

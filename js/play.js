@@ -121,7 +121,6 @@ var playState = {
       audio_degat.volume = 0;
       audio_explosion.volume = 0;
       audio_morsure.volume = 0;
-      audio_pas.volume = 0;
       audio_shockwave.volume = 0;
       audio_sprint.volume = 0;
     }}, this);

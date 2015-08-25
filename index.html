@@ -16,7 +16,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <style media="screen">
       body {
-        background-color: #3F51B5;
+        background-color: #b2af5c;
         margin: 0;
         height: 100%;
         overflow: hidden;
@@ -27,7 +27,7 @@
       html {
         height: 100%;
       }
-      #cont {
+      .cont {
         position: absolute;
         top: 0;
         left: 0;
@@ -45,6 +45,12 @@
         -webkit-align-items: center;
         -webkit-justify-content: center;
       }
+      img {
+        display: block;
+        top: 16px;
+        width: 192px;
+        margin: 0 auto;
+      }
       @-ms-viewport { width: 100vw ; zoom: 100% ; }
       @viewport { width: 100vw ; zoom: 100% ; }
       @-ms-viewport { user-zoom: fixed ; }
@@ -52,8 +58,9 @@
     </style>
   </head>
   <body>
-    <div id="cont">
+    <div class="cont">
       <div id="game" width="1024" height="576"></div>
     </div>
+    <img src="assets/ctrl.png"/>
   </body>
 </html>
