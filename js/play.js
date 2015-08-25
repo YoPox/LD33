@@ -1073,9 +1073,9 @@ function doIA(obj) {
           }
         }, 17);
 
-        if (obj.part2 == 3 && obj.canDash) {
+        if (obj.part3 == 3 && obj.canDash) {
           dash(obj);
-        } else if (obj.part2 == 2 && obj.canSprint) {
+        } else if (obj.part3 == 2 && obj.canSprint) {
           sprint(obj);
         }
 
@@ -1140,10 +1140,12 @@ function doIA(obj) {
 
         }, 17);
 
-        if ((obj.part1 == 2 || obj.part1 == 3) && obj.part2 == 3 && obj.canDash) {
+        if ((obj.part1 == 2 || obj.part1 == 3) && obj.part3 == 3 && obj.canDash) {
           dash(obj);
-        } else if ((obj.part1 == 2 || obj.part1 == 3) && obj.part2 == 2 && obj.canSprint) {
+        } else if ((obj.part1 == 2 || obj.part1 == 3) && obj.part3 == 2 && obj.canSprint) {
           sprint(obj);
+        } else if ((obj.part1 == 2 || obj.part1 == 3) && obj.part2 == 3 && obj.canShock) {
+          shocker(obj);
         }
 
       }
