@@ -102,7 +102,7 @@ var loadState = {
     audio_sprint = game.add.audio('audio_sprint');
     audio_sprint.volume = 0.45;
 
-    game.stage.backgroundColor = "#2B3D73";
+    game.stage.backgroundColor = "#d4cf70";
 
     // WHITE BACKGROUND
     var bmd = game.add.bitmapData(1280, 720);

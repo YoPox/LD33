@@ -225,14 +225,14 @@ var playState = {
       hero.body.velocity.x = 0;
       hero.body.velocity.y = 0;
       // EMITTERS
-      hero.emitter.x = hero.shadow.x = hero.x;
-      hero.emitter.y = hero.shadow.y = hero.y;
-      enemy1.emitter.x = enemy1.shadow.x = enemy1.x;
-      enemy1.emitter.y = enemy1.shadow.y = enemy1.y;
-      enemy2.emitter.x = enemy2.shadow.x = enemy2.x;
-      enemy2.emitter.y = enemy2.shadow.y = enemy2.y;
-      enemy3.emitter.x = enemy3.shadow.x = enemy3.x;
-      enemy3.emitter.y = enemy3.shadow.y = enemy3.y;
+      hero.emitter.x = hero.moveEmitter.x = hero.shadow.x = hero.x;
+      hero.emitter.y = hero.moveEmitter.y = hero.shadow.y = hero.y;
+      enemy1.emitter.x = enemy1.moveEmitter.x = enemy1.shadow.x = enemy1.x;
+      enemy1.emitter.y = enemy1.moveEmitter.y = enemy1.shadow.y = enemy1.y;
+      enemy2.emitter.x = enemy2.moveEmitter.x = enemy2.shadow.x = enemy2.x;
+      enemy2.emitter.y = enemy2.moveEmitter.y = enemy2.shadow.y = enemy2.y;
+      enemy3.emitter.x = enemy3.moveEmitter.x = enemy3.shadow.x = enemy3.x;
+      enemy3.emitter.y = enemy3.moveEmitter.y = enemy3.shadow.y = enemy3.y;
 
       // MOUTH
       hero.mouth.angle = hero.angle;

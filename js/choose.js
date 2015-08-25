@@ -124,7 +124,7 @@ var chooseState = {
     var bmd = game.add.bitmapData(1280, 720);
     bmd.ctx.beginPath();
     bmd.ctx.rect(0, 0, 640, 720);
-    bmd.ctx.fillStyle = '#90CAF9';
+    bmd.ctx.fillStyle = '#b2af5c';
     bmd.ctx.fill();
     clearRect = game.add.sprite(640, 0, bmd);
 
